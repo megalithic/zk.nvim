@@ -50,7 +50,7 @@ function! s:zk_complete(...)
 endfunction
 
 " Zk Commands with complete
-command! -nargs=+ -complete=custom,s:zk_complete Lspsaga    lua require('zk.command').load_command(<f-args>)
+command! -nargs=+ -complete=custom,s:zk_complete Zk    lua require('zk.command').load_command(<f-args>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
