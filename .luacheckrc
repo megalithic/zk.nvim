@@ -13,6 +13,7 @@ ignore = {
 }
 
 globals = {
+  zk_util
 }
 
 -- Global objects defined by the C code

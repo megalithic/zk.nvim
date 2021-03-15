@@ -1,3 +1,10 @@
+if not vim.fn.executable("zk") then
+  print("[zk.nvim] zk go binary must be installed.")
+  return
+end
+
+_G.zk_util = require("zk.util")
+
 local zk = {}
 
 zk.default_config = {}
