@@ -37,6 +37,7 @@ function M.install_zk()
       vim.api.nvim_out_write("\n")
       return
     end
+
     vim.api.nvim_out_write("[zk.nvim] updating zk..\n")
   else
     print("[zk.nvim] installing zk..")
@@ -45,9 +46,8 @@ function M.install_zk()
   call_go_cmd()
 end
 
-function M.new(args)
-  print(vim.inspect(args))
-  -- return adapter.new(args)
+function M.new(title)
+  return adapter.new(title)
 end
 
 return M

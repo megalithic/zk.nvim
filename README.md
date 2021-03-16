@@ -8,13 +8,13 @@ interface elements around `zk`.
 
 ### Install
 
-#### paq.nvim
+#### paq-nvim
 
-`paq { "megalithic/zk.nvim", opt = true }`
+`paq { "megalithic/zk.nvim" }`
 
 #### packer.nvim
 
-`use { "megalithic/zk.nvim", opt = true }`
+`use { "megalithic/zk.nvim" }`
 
 #### vim-plug
 
