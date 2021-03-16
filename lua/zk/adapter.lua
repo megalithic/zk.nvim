@@ -17,10 +17,12 @@ function M.new(title)
           string.format("[zk.nvim] on_stdout -> j: %s, d: %s, e: %s", vim.inspect(j), vim.inspect(d), vim.inspect(e))
         )
 
-        vim.api.nvim_out_write("[zk.nvim] new note created: " .. d[1])
+        if d[1] ~= nil and d[1] ~= "" then
+          vim.api.nvim_out_write("[zk.nvim] new note created: " .. d[1])
 
-        -- FIXME: defaulting to opening in a new vsplit for now..
-        vim.cmd(string.format("vnew %s", d[1]))
+          -- FIXME: defaulting to opening in a new vsplit for now..
+          vim.cmd(string.format("vnew %s", d[1]))
+        end
 
         return
       end,
