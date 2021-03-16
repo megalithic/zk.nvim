@@ -16,26 +16,25 @@ function M.new(title)
         print(
           string.format("[zk.nvim] on_stdout -> j: %s, d: %s, e: %s", vim.inspect(j), vim.inspect(d), vim.inspect(e))
         )
-        if d == 0 then
-          vim.api.nvim_out_write("[zk.nvim] new zettel note created")
-          return
-        end
 
-        vim.api.nvim_err_writeln("[zk.nvim] failed to create new zettel note")
+        vim.api.nvim_out_write("[zk.nvim] new zettel note created")
+        return
       end,
       on_stderr = function(j, d, e)
         print(
           string.format("[zk.nvim] on_stderr -> j: %s, d: %s, e: %s", vim.inspect(j), vim.inspect(d), vim.inspect(e))
         )
+
         if d == 0 then
           vim.api.nvim_out_write("[zk.nvim] new zettel note created")
           return
         end
 
-        vim.api.nvim_err_writeln("[zk.nvim] failed to create new zettel note")
+        vim.api.nvim_err_writeln("[zk.nvim] failed to create new zettel note -> " .. d[1])
       end,
       on_exit = function(j, d, e)
         print(string.format("[zk.nvim] on_exit -> j: %s, d: %s, e: %s", vim.inspect(j), vim.inspect(d), vim.inspect(e)))
+
         if d == 0 then
           vim.api.nvim_out_write("[zk.nvim] new zettel note created")
           return
