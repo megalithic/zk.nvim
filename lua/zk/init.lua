@@ -1,6 +1,12 @@
-local zk = {}
+_G.zk_util = require("zk.util")
 
-zk.default_config = {}
+local M = {}
+
+M.default_config = {
+  debug = false,
+  root_target = ".zk",
+  default_notebook_path = ""
+}
 
 local extend_config = function(opts)
   opts = opts or {}
@@ -8,22 +14,30 @@ local extend_config = function(opts)
     return
   end
   for key, value in pairs(opts) do
-    if zk.default_config[key] == nil then
-      error(string.format("[Zk] Key %s does not exist in config values", key))
+    if M.default_config[key] == nil then
+      error(string.format("[zk.nvim] The given key, %s, does not exist in config values", key))
       return
     end
-    if type(zk.default_config[key]) == "table" then
+    if type(M.default_config[key]) == "table" then
       for k, v in pairs(value) do
-        zk.default_config[key][k] = v
+        M.default_config[key][k] = v
       end
     else
-      zk.default_config[key] = value
+      M.default_config[key] = value
     end
   end
 end
 
-function zk.init(opts)
+function M.setup(opts)
   extend_config(opts)
+
+  vim.cmd("command! -nargs=? ZkNew :lua require('zk.command').new('<f-args>')")
+  vim.cmd("command! ZkInstall :lua require('zk.command').install_zk()")
+
+  if vim.fn.executable("zk") == 0 then
+    vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it")
+    return
+  end
 end
 
-return zk
+return M
