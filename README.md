@@ -66,3 +66,4 @@ Create a new note, with an optional title string.
 
 - Mickael Menu (https://github.com/mickael-menu/zk)
 - Evan Travers (http://evantravers.com/articles/tags/zettelkasten/)
+- ZettelKasten Introduction (https://zettelkasten.de/introduction/#why-are-we-so-interested-in-luhmann-s-zettelkasten)
