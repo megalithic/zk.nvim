@@ -43,9 +43,9 @@ require("zk").setup({})
 ## Usage
 
 
-#### Install `zk`
+#### Install [`zk`](https://github.com/mickael-menu/zk)
 
-Install the `zk` binary (as long as `go` is installed in your system's `PATH`).
+Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` is installed in your system's `PATH`).
 
 ```viml
 :ZkInstall
@@ -54,7 +54,7 @@ Install the `zk` binary (as long as `go` is installed in your system's `PATH`).
 
 #### Create a new note
 
-Create a new `zk` note, with an optional title string.
+Create a new note, with an optional title string.
 
 ```viml
 :ZkNew Optional Title
