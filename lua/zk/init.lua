@@ -1,6 +1,7 @@
 _G.zk_util = require("zk.util")
 
 local M = {}
+
 M.default_config = {
   debug = false,
   root_target = ".zk",
@@ -27,7 +28,7 @@ local extend_config = function(opts)
   end
 end
 
-function M.init(opts)
+function M.setup(opts)
   extend_config(opts)
 
   vim.cmd("command! -nargs=? ZkNew :lua require('zk.command').new('<f-args>')")

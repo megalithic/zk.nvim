@@ -26,7 +26,7 @@ user-interface elements around the fantastic golang library,
 
 
 ```lua
-require("zk").init({})
+require("zk").setup({})
 ```
 
 #### Default config
