@@ -12,7 +12,8 @@ endif
 
 let g:loaded_zk = 1
 
-lua require('zk').init()
+" NOTE: we require that the user runs setup themselves.."
+" lua require('zk').setup({})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
