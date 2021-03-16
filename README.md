@@ -1,5 +1,7 @@
 # zk.nvim
 
+_Presently WIP_
+
 A lightweight neovim (lua-based) wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
 The primary goals of this plugin are to provide handy maps, commands, and
