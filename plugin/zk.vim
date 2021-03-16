@@ -50,7 +50,10 @@ function! s:zk_complete(...)
 endfunction
 
 " Zk Commands with complete
-command! -nargs=+ -complete=custom,s:zk_complete Zk    lua require('zk.command').load_command(<f-args>)
+command! -nargs=+ -complete=custom,s:zk_complete Zk lua require('zk.command').load_command(<f-args>)
+
+" command! -nargs=1 -complete=file PlenaryBustedFile
+"       \ lua require('plenary.busted').run(vim.fn.expand("<args>"))
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

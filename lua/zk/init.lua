@@ -30,6 +30,8 @@ local extend_config = function(opts)
 end
 
 function zk.init(opts)
+  print(string.format("loaded zk with opts: %s", opts))
+
   extend_config(opts)
 end
 
