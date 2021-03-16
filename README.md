@@ -6,7 +6,7 @@ The primary goals of this plugin are to provide handy maps, commands, and
 interface elements around `zk`. 
 
 
-### Install
+## Install
 
 #### paq-nvim
 
@@ -20,10 +20,31 @@ interface elements around `zk`.
 
 `Plug "megalithic/zk.nvim"`
 
-### Configuration
 
-TBD
+## Configuration
 
+- TBD
+
+
+## Usage
+
+
+#### Install `zk`
+
+Install the `zk` binary (as long as `go` is installed in your system's `PATH`).
+
+```viml
+:ZkInstall
+```
+
+
+#### Create a new note
+
+Create a new `zk` note, with an optional title string.
+
+```viml
+:ZkNew Optional Title
+```
 
 ### Credit
 
