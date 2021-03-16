@@ -1,9 +1,10 @@
 # zk.nvim
 
-A lightweight neovim (lua-based) wrapper around https://github.com/mickael-menu/zk
+A lightweight neovim (lua-based) wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
 The primary goals of this plugin are to provide handy maps, commands, and
-interface elements around `zk`. 
+user-interface elements around the fantastic golang library,
+[`zk`](https://github.com/mickael-menu/zk).
 
 
 ## Install
@@ -23,7 +24,20 @@ interface elements around `zk`.
 
 ## Configuration
 
-- TBD
+
+```lua
+require("zk").init({})
+```
+
+#### Default config
+
+```lua
+{
+  debug = false,
+  root_target = ".zk",
+  default_notebook_path = ""
+}
+```
 
 
 ## Usage
