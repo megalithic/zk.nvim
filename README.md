@@ -1,6 +1,6 @@
 # zk.nvim
 
-_Presently WIP_
+**NOTE:** This plugin is presently _WIP_
 
 A lightweight neovim (lua-based) wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
@@ -8,6 +8,10 @@ The primary goals of this plugin are to provide handy maps, commands, and
 user-interface elements around the fantastic golang library,
 [`zk`](https://github.com/mickael-menu/zk).
 
+
+## Prerequisites
+
+* `neovim-0.5.0` or higher.
 
 ## Install
 

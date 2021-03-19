@@ -2,10 +2,11 @@ _G.zk_util = require("zk.util")
 
 local M = {}
 
-M.default_config = {
+M.config_values = {
   debug = false,
+  log = true,
   root_target = ".zk",
-  default_notebook_path = ""
+  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
 }
 
 local extend_config = function(opts)
@@ -14,30 +15,36 @@ local extend_config = function(opts)
     return
   end
   for key, value in pairs(opts) do
-    if M.default_config[key] == nil then
-      error(string.format("[zk.nvim] The given key, %s, does not exist in config values", key))
+    if M.config_values[key] == nil then
+      error(string.format("[zk.nvim] The given key, `%s`, does not exist in config values.", key))
       return
     end
-    if type(M.default_config[key]) == "table" then
+    if type(M.config_values[key]) == "table" then
       for k, v in pairs(value) do
-        M.default_config[key][k] = v
+        M.config_values[key][k] = v
       end
     else
-      M.default_config[key] = value
+      M.config_values[key] = value
     end
   end
 end
 
 function M.setup(opts)
+  -- safely merges passed in config values; use in the rest of the plugin with:
+  -- `local config = require('zk').config_values`; NOTE: not global
   extend_config(opts)
 
-  vim.cmd("command! -nargs=? ZkNew :lua require('zk.command').new('<f-args>')")
+  -- set our public api, optional zk
   vim.cmd("command! ZkInstall :lua require('zk.command').install_zk()")
 
   if vim.fn.executable("zk") == 0 then
-    vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it")
+    vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it.")
     return
   end
+
+  -- set our public api, requiring zk
+  -- vim.cmd("command! -nargs=? ZkInit :lua require('zk.command').init('<f-args>')")
+  vim.cmd("command! -nargs=? ZkNew :lua require('zk.command').new('<f-args>')")
 end
 
 return M

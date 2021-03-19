@@ -1,21 +1,38 @@
 local M = {}
+local config = require("zk").config_values
 
--- TODO: once commands can take functions as arguments natively remove this global
-M.command_callbacks = {}
+-- Print to cmd line, always
+function M.print(msg)
+  local txt = string.format("[zk.nvim] %s", msg)
+  vim.api.nvim_out_write(txt .. "\n")
+end
 
-function M.command(args)
-  local commands_table_name = "zk_util.command_callbacks"
-  local nargs = args.nargs or 0
-  local name = args[1]
-  local rhs = args[2]
-  local types = (args.types and type(args.types) == "table") and table.concat(args.types, " ") or ""
+-- Always print error message to cmd line
+function M.err(msg)
+  local txt = string.format("[zk.nvim] %s", msg)
+  vim.api.nvim_err_writeln(txt)
+end
 
-  if type(rhs) == "function" then
-    table.insert(M.command_callbacks, rhs)
-    rhs = string.format("lua %s[%d](%s)", commands_table_name, #M.command_callbacks, nargs == 0 and "" or "<f-args>")
+-- Generic logging
+function M.log(...)
+  if config.log then
+    vim.api.nvim_out_write(table.concat(vim.tbl_flatten {...}) .. "\n")
   end
+end
 
-  vim.cmd(string.format("command! -nargs=%s %s %s %s", nargs, types, name, rhs))
+function M.error(...)
+  if config.log then
+    if config.debug then
+      print(table.concat(...))
+    end
+    vim.api.nvim_error_write(table.concat(vim.tbl_flatten {...}) .. "\n")
+  end
+end
+
+function M.inspect(val)
+  if config.log and config.debug then
+    print(vim.inspect(val))
+  end
 end
 
 return M
