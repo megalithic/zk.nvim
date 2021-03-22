@@ -35,4 +35,9 @@ function M.inspect(val)
   end
 end
 
+-- function M.nmap(mode, _rhs, _lhs)
+--   local key = vim.api.nvim_replace_termcodes(lhs, true, false, true)
+--   vim.api.nvim_feedkeys(key, "n", true)
+-- end
+
 return M

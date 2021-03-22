@@ -5,6 +5,7 @@ local M = {}
 M.config_values = {
   debug = false,
   log = true,
+  enable_default_keymaps = true,
   root_target = ".zk",
   default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
 }
@@ -45,6 +46,10 @@ function M.setup(opts)
   -- set our public api, requiring zk
   -- vim.cmd("command! -nargs=? ZkInit :lua require('zk.command').init('<f-args>')")
   vim.cmd("command! -nargs=? ZkNew :lua require('zk.command').new('<f-args>')")
+
+  -- if M.config_values.enable_default_keymaps then
+  --   util.map('n', '<')
+  -- end
 end
 
 return M
