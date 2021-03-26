@@ -1,5 +1,4 @@
 local M = {}
-local config = require("zk").config_values
 
 -- Print to cmd line, always
 function M.print(msg)
@@ -15,14 +14,14 @@ end
 
 -- Generic logging
 function M.log(...)
-  if config.log then
+  if zk_config.log then
     vim.api.nvim_out_write(table.concat(vim.tbl_flatten {...}) .. "\n")
   end
 end
 
 function M.error(...)
-  if config.log then
-    if config.debug then
+  if zk_config.log then
+    if zk_config.debug then
       print(table.concat(...))
     end
     vim.api.nvim_error_write(table.concat(vim.tbl_flatten {...}) .. "\n")
@@ -30,7 +29,7 @@ function M.error(...)
 end
 
 function M.inspect(val)
-  if config.log and config.debug then
+  if zk_config.log and zk_config.debug then
     print(vim.inspect(val))
   end
 end
@@ -39,5 +38,28 @@ end
 --   local key = vim.api.nvim_replace_termcodes(lhs, true, false, true)
 --   vim.api.nvim_feedkeys(key, "n", true)
 -- end
+
+function M.extend(opts, target)
+  opts = opts or {}
+  if next(opts) == nil then
+    return
+  end
+
+  for key, value in pairs(opts) do
+    if target[key] == nil then
+      error(string.format("[zk.nvim] The given key, `%s`, does not exist in config values.", key))
+      return
+    end
+    if type(target[key]) == "table" then
+      for k, v in pairs(value) do
+        target[key][k] = v
+      end
+    else
+      target[key] = value
+    end
+  end
+
+  return target
+end
 
 return M

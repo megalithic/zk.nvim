@@ -50,8 +50,8 @@ function M.install_zk()
   call_go_cmd()
 end
 
-function M.new(title)
-  return adapter.new(title)
+function M.new(...)
+  return adapter.new(...)
 end
 
 return M
