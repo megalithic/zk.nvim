@@ -77,6 +77,7 @@ function M.new(args)
   local opts = {
     title = "",
     action = "vnew",
+    notebook = "",
     -- tags = {},
     content = ""
   }
@@ -85,12 +86,12 @@ function M.new(args)
   local action = opts.action
   local title = opts.title
   local content = opts.content
+  local notebook = opts.notebook
 
-  local sub_cmd = string.format("%s new --print-path", base_cmd)
-  local cmd = sub_cmd
+  local cmd = string.format("%s new --no-input --print-path %s", base_cmd, notebook)
 
   if title ~= nil and title ~= "" then
-    cmd = string.format('%s --title "%s"', sub_cmd, title)
+    cmd = string.format('%s --title "%s"', cmd, title)
   end
 
   if content ~= nil and content ~= "" then
@@ -111,12 +112,16 @@ function M.new(args)
                 vim.inspect(e)
               )
             )
+            vim.api.nvim_out_write("[zk.nvim] new note created: " .. d[1])
           end
 
-          vim.api.nvim_out_write("[zk.nvim] new note created: " .. d[1])
+          -- handle starting insert mode at the bottom of our file
+          local start_insert_mode = ""
+          if config.start_insert_mode then
+            start_insert_mode = " | startinsert | GA"
+          end
 
-          -- FIXME: defaulting to opening in a new vsplit for now..
-          vim.cmd(string.format("%s %s", action, d[1]))
+          vim.cmd(string.format("%s %s", action, d[1], start_insert_mode))
         end
       end,
       on_stderr = function(j, d, e)
