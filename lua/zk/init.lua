@@ -8,8 +8,7 @@ function M.setup(opts)
     log = true,
     enable_default_keymaps = true,
     root_target = ".zk",
-    default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
-    start_insert_mode = true
+    default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
   }
 
   _G.zk_config = util.extend(opts, config_values)
@@ -23,5 +22,3 @@ function M.setup(opts)
 end
 
 return M
-
-:q

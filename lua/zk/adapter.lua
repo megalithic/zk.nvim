@@ -79,7 +79,8 @@ function M.new(args)
     action = "vnew",
     notebook = "",
     -- tags = {},
-    content = ""
+    content = "",
+    start_insert_mode = true
   }
 
   opts = util.extend(args, opts)
@@ -117,11 +118,11 @@ function M.new(args)
 
           -- handle starting insert mode at the bottom of our file
           local start_insert_mode = ""
-          if config.start_insert_mode then
-            start_insert_mode = " | startinsert | GA"
+          if opts.start_insert_mode then
+            start_insert_mode = " | startinsert | normal GA"
           end
 
-          vim.cmd(string.format("%s %s", action, d[1], start_insert_mode))
+          vim.cmd(string.format("%s %s %s", action, d[1], start_insert_mode))
         end
       end,
       on_stderr = function(j, d, e)

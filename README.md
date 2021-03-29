@@ -39,8 +39,7 @@ require("zk").setup({
   log = true,
   enable_default_keymaps = true,
   root_target = ".zk",
-  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
-  start_insert_mode = true
+  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
 })
 ```
 
@@ -70,7 +69,9 @@ _Available new note arguments:_
 {
   title = "",
   content = "",
-  action = "vnew"
+  action = "vnew",
+  notebook = "",
+  start_insert_mode = true
 }
 ```
 
