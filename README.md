@@ -1,13 +1,17 @@
 # zk.nvim
 
-_Presently WIP_
+**NOTE:** This plugin is presently _WIP_
 
-A lightweight neovim (lua-based) wrapper around [`zk`](https://github.com/mickael-menu/zk).
+A lightweight neovim, _lua-based_ wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
 The primary goals of this plugin are to provide handy maps, commands, and
-user-interface elements around the fantastic golang library,
+user-interface elements around the fantastic golang zettelkasten project,
 [`zk`](https://github.com/mickael-menu/zk).
 
+
+## Prerequisites
+
+* `neovim-0.5.0` or higher.
 
 ## Install
 
@@ -28,17 +32,15 @@ user-interface elements around the fantastic golang library,
 
 
 ```lua
-require("zk").setup({})
-```
+-- with default config options:
 
-#### Default config
-
-```lua
-{
+require("zk").setup({
   debug = false,
+  log = true,
+  enable_default_keymaps = true,
   root_target = ".zk",
-  default_notebook_path = ""
-}
+  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
+})
 ```
 
 
@@ -53,13 +55,24 @@ Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` i
 :ZkInstall
 ```
 
-
 #### Create a new note
 
 Create a new note, with an optional title string.
 
 ```viml
-:ZkNew Optional Title
+:lua require('zk.command').new({ title = "my note title" })
+```
+
+_Available new note arguments:_
+
+```lua
+{
+  title = "",
+  content = "",
+  action = "vnew",
+  notebook = "",
+  start_insert_mode = true
+}
 ```
 
 ### Credit
