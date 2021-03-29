@@ -8,7 +8,8 @@ function M.setup(opts)
     log = true,
     enable_default_keymaps = true,
     root_target = ".zk",
-    default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
+    default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
+    fuzzy_finder = "fzf"
   }
 
   _G.zk_config = util.extend(opts, config_values)

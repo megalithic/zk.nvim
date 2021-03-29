@@ -11,7 +11,9 @@ user-interface elements around the fantastic golang zettelkasten project,
 
 ## Prerequisites
 
-* `neovim-0.5.0` or higher.
+* `neovim-0.5.0` or higher
+* For fzf support: [nvim-fzf](https://github.com/vijaymarupudi/nvim-fzf)
+* For telescope.nvim support: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 
 ## Install
 
