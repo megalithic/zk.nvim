@@ -63,7 +63,7 @@ Create a new note, with an optional title string.
 :lua require('zk.command').new({ title = "my note title" })
 ```
 
-_Available new note arguments:_
+Available _new note_ arguments:
 
 ```lua
 {
