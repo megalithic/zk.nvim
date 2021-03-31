@@ -54,4 +54,8 @@ function M.new(...)
   return adapter.new(...)
 end
 
+function M.search(...)
+  return adapter.search(...)
+end
+
 return M

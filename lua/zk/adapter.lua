@@ -19,18 +19,34 @@ function M.new(args)
 
   opts = util.extend(args, opts)
   local action = opts.action
-  local title = vim.fn.fnameescape(opts.title)
-  local content = vim.fn.fnameescape(opts.content)
-  local notebook = vim.fn.fnameescape(opts.notebook)
+  -- TODO: extract string parsing and cleaning to a function
+  -- NOTE: vim.fn.fnameescape doesn't seem to do what we want with that cleansing of
+  -- strings.
+  local title = string.gsub(opts.title, "|", "&") -- vim.fn.fnameescape(opts.title)
+  local content = opts.content -- vim.fn.fnameescape(opts.content)
+  local notebook = opts.notebook -- vim.fn.fnameescape(opts.notebook)
 
-  local cmd = string.format("%s new --no-input --print-path %s", base_cmd, notebook)
+  local cmd = string.format("%s new --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, notebook)
 
   if title ~= nil and title ~= "" then
     cmd = string.format('%s --title "%s"', cmd, title)
   end
 
   if content ~= nil and content ~= "" then
-    cmd = string.format('print "%s" | ', content) .. cmd
+    cmd = string.format('echo "%s" | %s', content, cmd)
+  end
+
+  if zk_config.debug then
+    print(
+      string.format(
+        "[zk.nvim] opts/args -> action: %s, title: %s, content: %s, notebook: %s, cmd: %s",
+        vim.inspect(action),
+        vim.inspect(title),
+        vim.inspect(content),
+        vim.inspect(notebook),
+        vim.inspect(cmd)
+      )
+    )
   end
 
   vim.fn.jobstart(
@@ -128,7 +144,7 @@ local function handle_fzf(opts)
   )()
 end
 
-local function handle_telescope(opts)
+local function handle_telescope(_)
   return {}
 end
 

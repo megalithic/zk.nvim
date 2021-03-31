@@ -77,6 +77,26 @@ Available _new note_ arguments:
 }
 ```
 
+#### Create a new note
+
+Create a new note, with an optional title string.
+
+```viml
+:lua require('zk.command').new({ title = "my note title" })
+```
+
+_Available new note arguments:_
+
+```lua
+{
+  title = "",
+  content = "",
+  action = "vnew",
+  notebook = "",
+  start_insert_mode = true
+}
+```
+
 ### Credit
 
 - Mickael Menu (https://github.com/mickael-menu/zk)
