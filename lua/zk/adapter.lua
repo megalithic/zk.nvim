@@ -117,10 +117,34 @@ end
 local function handle_fzf(opts)
   local fzf = require("fzf")
 
+  -- TODO: is there another one of ensuring our searches, results, and
+  -- previews occur in the correct `pwd` and `cwd`.
+  vim.cmd("cd " .. zk_config.default_notebook_path)
+
+  local preview = "head -n $FZF_PREVIEW_LINES -- {-1}"
+  local cmd = string.format("%s list --quiet --format path", base_cmd)
+
+  if opts.notebook ~= nil and opts.notebook ~= "" then
+    cmd = string.format("%s %s", cmd, opts.notebook)
+  end
+
+  if opts.tags ~= nil and opts.tags ~= "" then
+    cmd = string.format("%s --tag %s", cmd, opts.tags)
+  end
+
+  if opts.query ~= nil and opts.query ~= "" then
+    cmd = string.format("%s --match %s", cmd, vim.fn.fnameescape(opts.query))
+  end
+
+  if vim.fn.executable("bat") == 1 then
+    -- NOTE: 5 is the number that prevents overflow of the preview window when using bat
+    preview = "bat -p --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always -- {-1}"
+  end
+
   coroutine.wrap(
     function()
-      local query_cmd = string.format("zk list %s %s", opts.notebook, vim.fn.fnameescape(opts.query))
-      local choices = fzf.fzf(query_cmd)
+      local choices =
+        fzf.fzf(cmd, ("--ansi --preview=%s --expect=ctrl-s,ctrl-t,ctrl-v --multi"):format(vim.fn.shellescape(preview)))
 
       if not choices then
         return
@@ -145,18 +169,18 @@ local function handle_fzf(opts)
 end
 
 local function handle_telescope(_)
-  return {}
 end
 
 function M.search(args)
   local opts = {
     action = "vnew",
     notebook = "",
-    query = ""
+    query = "",
+    tags = ""
   }
   opts = util.extend(args, opts)
 
-  if zk_config.fuzzy_finder == "fzf" then
+  if zk_config.fuzzy_finder == "fzf" and vim.fn.executable("fzf") then
     return handle_fzf(opts)
   else
     return handle_telescope(opts)
