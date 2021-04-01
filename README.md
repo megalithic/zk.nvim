@@ -59,8 +59,6 @@ Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` i
 
 #### Create a new note
 
-Create a new note, with an optional title string.
-
 ```viml
 :lua require('zk.command').new({ title = "my note title" })
 ```
@@ -77,23 +75,23 @@ Available _new note_ arguments:
 }
 ```
 
-#### Create a new note
+#### Search/filtering of notes
 
-Create a new note, with an optional title string.
+`zk` offers such a wealth of power with searching, filtering and more for your
+notes, notebooks, etc. Supports interacting with `fzf`, via flexible and fast
+lua-api, `nvim-fzf`. Soon to support `telescope.nvim` integration too.
 
 ```viml
-:lua require('zk.command').new({ title = "my note title" })
+:lua require('zk.command').search({ query = "hiring NOT onboarding" })
 ```
 
-_Available new note arguments:_
+_Available search notes arguments:_
 
 ```lua
 {
-  title = "",
-  content = "",
-  action = "vnew",
+  query = "",
   notebook = "",
-  start_insert_mode = true
+  tags = "",
 }
 ```
 
@@ -101,4 +99,4 @@ _Available new note arguments:_
 
 - Mickael Menu (https://github.com/mickael-menu/zk)
 - Evan Travers (http://evantravers.com/articles/tags/zettelkasten/)
-- ZettelKasten Introduction (https://zettelkasten.de/introduction/#why-are-we-so-interested-in-luhmann-s-zettelkasten)
+- Zettelkasten Introduction (https://zettelkasten.de/introduction/#why-are-we-so-interested-in-luhmann-s-zettelkasten)

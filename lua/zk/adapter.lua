@@ -173,7 +173,6 @@ end
 
 function M.search(args)
   local opts = {
-    action = "vnew",
     notebook = "",
     query = "",
     tags = ""
