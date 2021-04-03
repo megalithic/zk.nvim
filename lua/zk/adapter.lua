@@ -4,6 +4,66 @@ local util = require("zk.util")
 local M = {}
 local base_cmd = "zk"
 
+-- Handles raw zk command; basically acts as a pass-through to zk directly.
+function M.zk_raw(cmd)
+  vim.fn.jobstart(
+    cmd,
+    {
+      on_stdout = function(j, d, e)
+        if type(d) == "table" and d[1] ~= nil and d[1] ~= "" then
+          if zk_config.debug then
+            print(
+              string.format(
+                "[zk.nvim] zk_raw on_stdout -> j: %s, d: %s, e: %s",
+                vim.inspect(j),
+                vim.inspect(d),
+                vim.inspect(e)
+              )
+            )
+            vim.api.nvim_out_write("[zk.nvim] zk_raw: " .. d[1])
+          end
+
+        -- vim.cmd(string.format("%s %s %s", action, d[1], start_insert_mode))
+        end
+      end,
+      on_stderr = function(j, d, e)
+        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
+          if zk_config.debug then
+            print(
+              string.format(
+                "[zk.nvim] zk_raw on_stderr -> j: %s, d: %s, e: %s",
+                vim.inspect(j),
+                vim.inspect(d),
+                vim.inspect(e)
+              )
+            )
+          end
+
+          vim.api.nvim_err_writeln("[zk.nvim] (on_stderr) zk_raw failed -> " .. d[1])
+          return
+        end
+      end,
+      on_exit = function(j, d, e)
+        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
+          if zk_config.debug then
+            print(
+              string.format(
+                "[zk.nvim] zk_raw on_exit -> j: %s, d: %s, e: %s",
+                vim.inspect(j),
+                vim.inspect(d),
+                vim.inspect(e)
+              )
+            )
+          end
+
+          vim.api.nvim_err_writeln("[zk.nvim] (on_exit) zk_raw failed -> " .. d[1])
+          return
+        end
+      end
+    }
+  )
+end
+
 function M.init()
 end
 
@@ -57,7 +117,7 @@ function M.new(args)
           if zk_config.debug then
             print(
               string.format(
-                "[zk.nvim] on_stdout -> j: %s, d: %s, e: %s",
+                "[zk.nvim] new on_stdout -> j: %s, d: %s, e: %s",
                 vim.inspect(j),
                 vim.inspect(d),
                 vim.inspect(e)
@@ -80,7 +140,7 @@ function M.new(args)
           if zk_config.debug then
             print(
               string.format(
-                "[zk.nvim] on_stderr -> j: %s, d: %s, e: %s",
+                "[zk.nvim] new on_stderr -> j: %s, d: %s, e: %s",
                 vim.inspect(j),
                 vim.inspect(d),
                 vim.inspect(e)
@@ -96,7 +156,12 @@ function M.new(args)
         if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
           if zk_config.debug then
             print(
-              string.format("[zk.nvim] on_exit -> j: %s, d: %s, e: %s", vim.inspect(j), vim.inspect(d), vim.inspect(e))
+              string.format(
+                "[zk.nvim] new on_exit -> j: %s, d: %s, e: %s",
+                vim.inspect(j),
+                vim.inspect(d),
+                vim.inspect(e)
+              )
             )
           end
 
@@ -143,8 +208,8 @@ local function handle_fzf(opts)
 
   coroutine.wrap(
     function()
-      local choices =
-        fzf.fzf(cmd, ("--ansi --preview=%s --expect=ctrl-s,ctrl-t,ctrl-v --multi"):format(vim.fn.shellescape(preview)))
+      -- TODO: https://github.com/mickael-menu/zk/blob/be78def5aa0d5952f00dd92840763f011d596c28/adapter/fzf/fzf.go#L73-L87
+      local choices = fzf.fzf(cmd, ("--preview=%s --expect=ctrl-s,ctrl-t,ctrl-v"):format(vim.fn.shellescape(preview)))
 
       if not choices then
         return
@@ -175,7 +240,21 @@ function M.search(args)
   local opts = {
     notebook = "",
     query = "",
-    tags = ""
+    tags = "",
+    fzf_opts = {
+      "--delimiter=\x01",
+      "--tiebreak=begin",
+      "--ansi",
+      "--exact",
+      "--tabstop=4",
+      "--height=100%",
+      "--layout=reverse",
+      -- Make sure the path and titles are always visible
+      "--no-hscroll",
+      -- Don't highlight search terms
+      "--color=hl:-1,hl+:-1",
+      "--preview-window=wrap"
+    }
   }
   opts = util.extend(args, opts)
 
