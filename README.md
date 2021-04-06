@@ -11,7 +11,7 @@ user-interface elements around the fantastic golang zettelkasten project,
 
 ## Prerequisites
 
-* `neovim-0.5.0` or higher
+* `nvim-0.5.0` or higher
 * For fzf support: [nvim-fzf](https://github.com/vijaymarupudi/nvim-fzf)
 * For telescope.nvim support: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 
@@ -79,7 +79,9 @@ Available _new note_ arguments:
 
 `zk` offers such a wealth of power with searching, filtering and more for your
 notes, notebooks, etc. Supports interacting with `fzf`, via flexible and fast
-lua-api, `nvim-fzf`. Soon to support `telescope.nvim` integration too.
+lua-based API, `nvim-fzf`. 
+
+_Future support for `telescope.nvim` integration, coming soon._
 
 ```viml
 :lua require('zk.command').search({ query = "hiring NOT onboarding" })

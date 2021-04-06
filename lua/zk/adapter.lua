@@ -4,111 +4,7 @@ local util = require("zk.util")
 local M = {}
 local base_cmd = "zk"
 
--- Handles raw zk command; basically acts as a pass-through to zk directly.
-function M.zk_raw(cmd)
-  vim.fn.jobstart(
-    cmd,
-    {
-      on_stdout = function(j, d, e)
-        if type(d) == "table" and d[1] ~= nil and d[1] ~= "" then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] zk_raw on_stdout -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-            vim.api.nvim_out_write("[zk.nvim] zk_raw: " .. d[1])
-          end
-
-        -- vim.cmd(string.format("%s %s %s", action, d[1], start_insert_mode))
-        end
-      end,
-      on_stderr = function(j, d, e)
-        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] zk_raw on_stderr -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-          end
-
-          vim.api.nvim_err_writeln("[zk.nvim] (on_stderr) zk_raw failed -> " .. d[1])
-          return
-        end
-      end,
-      on_exit = function(j, d, e)
-        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] zk_raw on_exit -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-          end
-
-          vim.api.nvim_err_writeln("[zk.nvim] (on_exit) zk_raw failed -> " .. d[1])
-          return
-        end
-      end
-    }
-  )
-end
-
-function M.init()
-end
-
-function M.new(args)
-  local opts = {
-    title = "",
-    action = "vnew",
-    notebook = "",
-    -- tags = {},
-    content = "",
-    start_insert_mode = true
-  }
-
-  opts = util.extend(args, opts)
-  local action = opts.action
-  -- TODO: extract string parsing and cleaning to a function
-  -- NOTE: vim.fn.fnameescape doesn't seem to do what we want with that cleansing of
-  -- strings.
-  local title = string.gsub(opts.title, "|", "&") -- vim.fn.fnameescape(opts.title)
-  local content = opts.content -- vim.fn.fnameescape(opts.content)
-  local notebook = opts.notebook -- vim.fn.fnameescape(opts.notebook)
-
-  local cmd = string.format("%s new --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, notebook)
-
-  if title ~= nil and title ~= "" then
-    cmd = string.format('%s --title "%s"', cmd, title)
-  end
-
-  if content ~= nil and content ~= "" then
-    cmd = string.format('echo "%s" | %s', content, cmd)
-  end
-
-  if zk_config.debug then
-    print(
-      string.format(
-        "[zk.nvim] opts/args -> action: %s, title: %s, content: %s, notebook: %s, cmd: %s",
-        vim.inspect(action),
-        vim.inspect(title),
-        vim.inspect(content),
-        vim.inspect(notebook),
-        vim.inspect(cmd)
-      )
-    )
-  end
-
+local function process_cmd(cmd, callback_fn)
   vim.fn.jobstart(
     cmd,
     {
@@ -123,16 +19,12 @@ function M.new(args)
                 vim.inspect(e)
               )
             )
-            vim.api.nvim_out_write("[zk.nvim] new note created: " .. d[1])
+            vim.api.nvim_out_write("[zk.nvim] process_cmd success: " .. d[1])
           end
 
-          -- handle starting insert mode at the bottom of our file
-          local start_insert_mode = ""
-          if opts.start_insert_mode then
-            start_insert_mode = " | startinsert | normal GA"
+          if callback_fn ~= nil and type(callback_fn) == "function" then
+            callback_fn(d)
           end
-
-          vim.cmd(string.format("%s %s %s", action, d[1], start_insert_mode))
         end
       end,
       on_stderr = function(j, d, e)
@@ -148,7 +40,7 @@ function M.new(args)
             )
           end
 
-          vim.api.nvim_err_writeln("[zk.nvim] (on_stderr) failed to create new note -> " .. d[1])
+          vim.api.nvim_err_writeln("[zk.nvim] (on_stderr) process_cmd failed -> " .. d[1])
           return
         end
       end,
@@ -165,13 +57,98 @@ function M.new(args)
             )
           end
 
-          vim.api.nvim_err_writeln("[zk.nvim] (on_exit) failed to create new note -> " .. d[1])
+          vim.api.nvim_err_writeln("[zk.nvim] (on_exit) process_cmd failed -> " .. d[1])
           return
         end
       end
     }
   )
 end
+
+-- Handles raw zk command; basically acts as a pass-through to zk directly.
+function M.zk_raw(cmd, callback_fn)
+  process_cmd(cmd, callback_fn)
+end
+
+function M.init()
+end
+
+function M.new(args)
+  local opts = {
+    title = "",
+    action = "vnew",
+    notebook = "",
+    -- tags = {},
+    content = "",
+    start_insert_mode = true
+  }
+
+  opts = util.extend(args, opts)
+
+  -- TODO: extract string parsing and cleaning to a function
+  -- NOTE: vim.fn.fnameescape doesn't seem to do what we want with that cleansing of
+  -- strings.
+  opts.title = string.gsub(opts.title, "|", "&") -- vim.fn.fnameescape(opts.title)
+
+  local cmd = string.format("%s new --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, opts.notebook)
+
+  if opts.title ~= nil and opts.title ~= "" then
+    cmd = string.format('%s --title "%s"', cmd, opts.title)
+  end
+
+  if opts.content ~= nil and opts.content ~= "" then
+    cmd = string.format('echo "%s" | %s', opts.content, cmd)
+  end
+
+  if zk_config.debug then
+    print(
+      string.format(
+        "[zk.nvim] opts/args -> action: %s, title: %s, content: %s, notebook: %s, cmd: %s",
+        vim.inspect(opts.action),
+        vim.inspect(opts.title),
+        vim.inspect(opts.content),
+        vim.inspect(opts.notebook),
+        vim.inspect(cmd)
+      )
+    )
+  end
+
+  process_cmd(
+    cmd,
+    function(d)
+      -- handle starting insert mode at the bottom of our file
+      local start_insert_mode = ""
+      if opts.start_insert_mode then
+        start_insert_mode = " | startinsert | normal GA"
+      end
+
+      vim.cmd(string.format("%s %s %s", opts.action, d[1], start_insert_mode))
+    end
+  )
+end
+
+-- function M.edit(args)
+--   local opts = {
+--     title = "",
+--     action = "vnew",
+--     notebook = "",
+--     -- tags = {},
+--     content = "",
+--     start_insert_mode = true
+--   }
+
+--   opts = util.extend(args, opts)
+
+--   local cmd = string.format("%s edit --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, opts.notebook)
+
+--   M.zk_raw(
+--     cmd,
+--     opts,
+--     function(d)
+
+--     end
+--   )
+-- end
 
 function M.list()
 end
@@ -234,6 +211,9 @@ local function handle_fzf(opts)
 end
 
 local function handle_telescope(_)
+  vim.api.nvim_err_writeln("[zk.nvim] telescope.nvim support not yet implemented.")
+
+  return
 end
 
 function M.search(args)
