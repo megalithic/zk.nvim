@@ -55,7 +55,47 @@ function M.new(...)
 end
 
 function M.search(...)
+  local fzf_exists, _ = pcall(require, "fzf-commands")
+  if zk_config.fuzzy_finder == "fzf" and not fzf_exists then
+    vim.api.nvim_err_writeln(
+      "[zk.nvim] in order to use fzf, https://github.com/vijaymarupudi/nvim-fzf-commands must be installed."
+    )
+    return
+  end
+
+  local telescope_exists, _ = pcall(require, "telescope")
+  if zk_config.fuzzy_finder == "telescope" and not telescope_exists then
+    vim.api.nvim_err_writeln(
+      "[zk.nvim] in order to use telescope.nvim, https://github.com/nvim-telescope/telescope.nvim must be installed."
+    )
+    return
+  end
+
   return adapter.search(...)
+end
+
+function M.create_note_link(pattern)
+  local escape_chars = function(string)
+    return string.gsub(
+      string,
+      "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*]",
+      {
+        ["\\"] = "\\\\",
+        ["-"] = "\\-",
+        ["("] = "\\(",
+        [")"] = "\\)",
+        ["["] = "\\[",
+        ["]"] = "\\]",
+        ["{"] = "\\{",
+        ["}"] = "\\}",
+        ["?"] = "\\?",
+        ["+"] = "\\+",
+        ["*"] = "\\*"
+      }
+    )
+  end
+
+  print(vim.inspect(escape_chars(pattern)))
 end
 
 return M

@@ -7,7 +7,6 @@ function M.setup(opts)
     debug = false,
     log = true,
     enable_default_keymaps = true,
-    root_target = ".zk",
     default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
     fuzzy_finder = "fzf"
   }
@@ -20,6 +19,26 @@ function M.setup(opts)
     vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it.")
     return
   end
+
+  vim.cmd([[command! -nargs=1 ZkCreateNoteLink call luaeval('require("zk.command").create_note_link(_A)', <f-args>)]])
+
+  vim.api.nvim_set_keymap(
+    "x",
+    "<CR>",
+    -- "<esc>:exe('ZkCreateNoteLink '.expand('<cword'))<cr>",
+    "<cmd>lua require('zk.command').create_note_link(vim.fn.expand('<cword>'))<cr>",
+    {noremap = true, expr = true, silent = false}
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<CR>",
+    -- [[<esc><cmd>("ZkCreateNoteLink ".expand("<cword"))<cr>]],
+    "<cmd>lua require('zk.command').create_note_link(vim.fn.expand('<cword>'))<cr>",
+    {noremap = true, expr = true, silent = false}
+  )
+
+  -- FIXME:
+  -- error when called: `E15: Invalid expression: <80><fd>hlua require('zk.command').create_note_link(vim.fn.expand('<cword>'))^M`
 end
 
 return M

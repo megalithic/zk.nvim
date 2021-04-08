@@ -119,36 +119,13 @@ function M.new(args)
       -- handle starting insert mode at the bottom of our file
       local start_insert_mode = ""
       if opts.start_insert_mode then
-        start_insert_mode = " | startinsert | normal GA"
+        start_insert_mode = " | startinsert | normal Go"
       end
 
       vim.cmd(string.format("%s %s %s", opts.action, d[1], start_insert_mode))
     end
   )
 end
-
--- function M.edit(args)
---   local opts = {
---     title = "",
---     action = "vnew",
---     notebook = "",
---     -- tags = {},
---     content = "",
---     start_insert_mode = true
---   }
-
---   opts = util.extend(args, opts)
-
---   local cmd = string.format("%s edit --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, opts.notebook)
-
---   M.zk_raw(
---     cmd,
---     opts,
---     function(d)
-
---     end
---   )
--- end
 
 function M.list()
 end
