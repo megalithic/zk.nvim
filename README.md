@@ -114,6 +114,7 @@ _Default arguments:_
   title = "",
   notebook = "",
   action = "vnew",
+  open_note_on_creation = true
 }
 ```
 
