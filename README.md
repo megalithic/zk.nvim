@@ -40,7 +40,9 @@ require("zk").setup({
   debug = false,
   log = true,
   enable_default_keymaps = true,
-  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or ""
+  default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
+  fuzzy_finder = "fzf", -- or "telescope"
+  link_format = "markdown" -- or "wikilink"
 })
 ```
 
@@ -62,14 +64,14 @@ Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` i
 :lua require('zk.command').new({ title = "my note title" })
 ```
 
-Available _new note_ arguments:
+_Default arguments:_
 
 ```lua
 {
   title = "",
+  notebook = "",
   content = "",
   action = "vnew",
-  notebook = "",
   start_insert_mode = true
 }
 ```
@@ -86,13 +88,32 @@ _Future support for `telescope.nvim` integration, coming soon._
 :lua require('zk.command').search({ query = "hiring NOT onboarding" })
 ```
 
-_Available search notes arguments:_
+_Default arguments:_
 
 ```lua
 {
   query = "",
   notebook = "",
   tags = "",
+}
+```
+
+#### Generate a new note and inline link
+
+Quickly change the word under cursor (or visually selected) to markdown or
+wikilink syntax :
+
+```viml
+:lua require('zk.command').create_note_link({ title = "my note title", notebook = "wiki", action = "e" })
+```
+
+_Default arguments:_
+
+```lua
+{
+  title = "",
+  notebook = "",
+  action = "vnew",
 }
 ```
 

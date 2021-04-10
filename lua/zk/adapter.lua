@@ -4,73 +4,32 @@ local util = require("zk.util")
 local M = {}
 local base_cmd = "zk"
 
-local function process_cmd(cmd, callback_fn)
-  vim.fn.jobstart(
-    cmd,
-    {
-      on_stdout = function(j, d, e)
-        if type(d) == "table" and d[1] ~= nil and d[1] ~= "" then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] new on_stdout -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-            vim.api.nvim_out_write("[zk.nvim] process_cmd success: " .. d[1])
-          end
-
-          if callback_fn ~= nil and type(callback_fn) == "function" then
-            callback_fn(d)
-          end
-        end
-      end,
-      on_stderr = function(j, d, e)
-        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] new on_stderr -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-          end
-
-          vim.api.nvim_err_writeln("[zk.nvim] (on_stderr) process_cmd failed -> " .. d[1])
-          return
-        end
-      end,
-      on_exit = function(j, d, e)
-        if (type(d) == "table" and d[1] ~= nil and d[1] ~= "") then
-          if zk_config.debug then
-            print(
-              string.format(
-                "[zk.nvim] new on_exit -> j: %s, d: %s, e: %s",
-                vim.inspect(j),
-                vim.inspect(d),
-                vim.inspect(e)
-              )
-            )
-          end
-
-          vim.api.nvim_err_writeln("[zk.nvim] (on_exit) process_cmd failed -> " .. d[1])
-          return
-        end
-      end
-    }
-  )
-end
-
 -- Handles raw zk command; basically acts as a pass-through to zk directly.
-function M.zk_raw(cmd, callback_fn)
-  process_cmd(cmd, callback_fn)
-end
+-- TODO: handle a table of args param at some point? presently relies on
+-- building up a cmd string
+function M.raw_zk(cmd, on_done)
+  local function get_lines_from_file(file)
+    local t = {}
+    for v in file:lines() do
+      table.insert(t, v)
+    end
+    return t
+  end
 
-function M.init()
+  -- note, this is ALL blocking presently
+  -- see nvim-fzf for ideas on how to async
+  local output_tmpname = vim.fn.tempname()
+  os.execute(string.format("%s > %s", cmd, vim.fn.shellescape(output_tmpname)))
+  local f = io.open(output_tmpname)
+  local output = get_lines_from_file(f)
+  f:close()
+  vim.fn.delete(output_tmpname)
+
+  -- do things when our cmd execution is complete
+  -- FIXME: we assume we had/have output to pass through and a return..
+  on_done(output)
+
+  return output
 end
 
 function M.new(args)
@@ -78,7 +37,6 @@ function M.new(args)
     title = "",
     action = "vnew",
     notebook = "",
-    -- tags = {},
     content = "",
     start_insert_mode = true
   }
@@ -90,7 +48,11 @@ function M.new(args)
   -- strings.
   opts.title = string.gsub(opts.title, "|", "&") -- vim.fn.fnameescape(opts.title)
 
-  local cmd = string.format("%s new --no-input --print-path $ZK_NOTEBOOK_DIR/%s", base_cmd, opts.notebook)
+  local cmd = string.format("%s new --no-input --print-path", base_cmd)
+
+  if opts.notebook ~= nil and opts.notebook ~= "" then
+    cmd = string.format("%s $ZK_NOTEBOOK_DIR/%s", cmd, opts.notebook)
+  end
 
   if opts.title ~= nil and opts.title ~= "" then
     cmd = string.format('%s --title "%s"', cmd, opts.title)
@@ -103,7 +65,7 @@ function M.new(args)
   if zk_config.debug then
     print(
       string.format(
-        "[zk.nvim] opts/args -> action: %s, title: %s, content: %s, notebook: %s, cmd: %s",
+        "[zk.nvim] new note opts/args -> action: %s, title: %s, content: %s, notebook: %s, cmd: %s",
         vim.inspect(opts.action),
         vim.inspect(opts.title),
         vim.inspect(opts.content),
@@ -113,18 +75,26 @@ function M.new(args)
     )
   end
 
-  process_cmd(
+  return M.raw_zk(
     cmd,
-    function(d)
+    function(output)
+      -- bail out of doing anything with this buffer if no action
+      -- assumes the caller will handle next steps with the returned file path
+      if opts.action == nil or opts.action == "" then
+        return
+      end
+
       -- handle starting insert mode at the bottom of our file
       local start_insert_mode = ""
+
       if opts.start_insert_mode then
         start_insert_mode = " | startinsert | normal Go"
       end
 
-      vim.cmd(string.format("%s %s %s", opts.action, d[1], start_insert_mode))
+      -- TODO: this assumes our success output is our file name
+      vim.cmd(string.format("%s %s %s", opts.action, output[1], start_insert_mode))
     end
-  )
+  )[1] -- again, we assume this is always a single item table
 end
 
 function M.list()

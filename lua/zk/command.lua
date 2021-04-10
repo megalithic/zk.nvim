@@ -1,6 +1,7 @@
 -- The interface to provide the available commands via lua to nvim
 
 local adapter = require("zk.adapter")
+local util = require("zk.util")
 
 local M = {}
 
@@ -74,28 +75,30 @@ function M.search(...)
   return adapter.search(...)
 end
 
-function M.create_note_link(pattern)
-  local escape_chars = function(string)
-    return string.gsub(
-      string,
-      "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*]",
-      {
-        ["\\"] = "\\\\",
-        ["-"] = "\\-",
-        ["("] = "\\(",
-        [")"] = "\\)",
-        ["["] = "\\[",
-        ["]"] = "\\]",
-        ["{"] = "\\{",
-        ["}"] = "\\}",
-        ["?"] = "\\?",
-        ["+"] = "\\+",
-        ["*"] = "\\*"
-      }
-    )
+function M.create_note_link(args)
+  local opts = {
+    title = "",
+    action = "vnew",
+    notebook = "",
+    open_note_on_creation = true
+  }
+
+  opts = util.extend(args, opts)
+
+  if opts.title == "" then
+    local selection = util.get_visual_selection()
+    opts.title = selection.contents
   end
 
-  print(vim.inspect(escape_chars(pattern)))
+  if opts.title ~= nil and opts.title ~= "" then
+    local new_note_path = M.new({title = opts.title, notebook = opts.notebook, action = ""})
+    local link_output = util.make_link_text(opts.title, vim.fn.fnameescape(new_note_path))
+    util.replace_selection_with_link_text(opts.title, link_output)
+
+    if opts.open_note_on_creation then
+      vim.cmd(string.format("%s %s", opts.action, new_note_path))
+    end
+  end
 end
 
 return M

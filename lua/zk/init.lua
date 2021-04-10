@@ -8,7 +8,8 @@ function M.setup(opts)
     log = true,
     enable_default_keymaps = true,
     default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
-    fuzzy_finder = "fzf"
+    fuzzy_finder = "fzf", -- or "telescope"
+    link_format = "markdown" -- or "wikilink"
   }
 
   _G.zk_config = util.extend(opts, config_values)
@@ -20,25 +21,21 @@ function M.setup(opts)
     return
   end
 
-  vim.cmd([[command! -nargs=1 ZkCreateNoteLink call luaeval('require("zk.command").create_note_link(_A)', <f-args>)]])
+  -- TODO: figure out how best to implement keybindings for only markdown ft
 
+  -- FIXME: for some reason i get _no_ table passed through on v/s/x mode binding
   vim.api.nvim_set_keymap(
     "x",
     "<CR>",
-    -- "<esc>:exe('ZkCreateNoteLink '.expand('<cword'))<cr>",
-    "<cmd>lua require('zk.command').create_note_link(vim.fn.expand('<cword>'))<cr>",
-    {noremap = true, expr = true, silent = false}
+    "<cmd>lua require('zk.command').create_note_link({})<cr>",
+    {noremap = true, silent = false}
   )
   vim.api.nvim_set_keymap(
     "n",
     "<CR>",
-    -- [[<esc><cmd>("ZkCreateNoteLink ".expand("<cword"))<cr>]],
-    "<cmd>lua require('zk.command').create_note_link(vim.fn.expand('<cword>'))<cr>",
-    {noremap = true, expr = true, silent = false}
+    "<cmd>lua require('zk.command').create_note_link({title = vim.fn.expand('<cword>')})<cr>",
+    {noremap = true, silent = false}
   )
-
-  -- FIXME:
-  -- error when called: `E15: Invalid expression: <80><fd>hlua require('zk.command').create_note_link(vim.fn.expand('<cword>'))^M`
 end
 
 return M
