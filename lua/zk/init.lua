@@ -3,7 +3,7 @@ local util = require("zk.util")
 local M = {}
 
 function M.ft_setup()
-  if vim.bo.filetype == "markdown" then
+  if zk_config.enable_default_keymaps and vim.bo.filetype == "markdown" then
     -- FIXME: for some reason i get _no_ table passed through on v/s/x mode binding
     vim.api.nvim_set_keymap(
       "x",
