@@ -49,6 +49,10 @@ require("zk").setup({
 
 ## Usage
 
+For all usages of this plugin, the parlance of `notebook` is common place, and
+refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`. These `notebooks`
+also relate to your [`group`](https://github.com/mickael-menu/zk/blob/main/docs/config-group.md) setup within your `config.toml`.
+
 
 #### Install [`zk`](https://github.com/mickael-menu/zk)
 
@@ -101,7 +105,7 @@ _Default arguments:_
 #### Generate a new note and inline link
 
 Quickly change the word under cursor (or visually selected) to markdown or
-wikilink syntax :
+wikilink syntax:
 
 ```viml
 :lua require('zk.command').create_note_link({ title = "my note title", notebook = "wiki", action = "e" })
