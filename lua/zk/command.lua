@@ -83,7 +83,7 @@ function M.create_note_link(args)
     open_note_on_creation = true
   }
 
-  opts = util.extend(args, opts)
+  opts = util.extend(opts, args)
 
   if opts.title == "" then
     local selection = util.get_visual_selection()

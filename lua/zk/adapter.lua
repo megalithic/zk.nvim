@@ -41,7 +41,7 @@ function M.new(args)
     start_insert_mode = true
   }
 
-  opts = util.extend(args, opts)
+  opts = util.extend(opts, args)
 
   -- TODO: extract string parsing and cleaning to a function
   -- NOTE: vim.fn.fnameescape doesn't seem to do what we want with that cleansing of
@@ -78,10 +78,10 @@ function M.new(args)
   return M.raw_zk(
     cmd,
     function(output)
-      -- bail out of doing anything with this buffer if no action
+      -- bail out of doing anything with this buffer if no action;
       -- assumes the caller will handle next steps with the returned file path
       if opts.action == nil or opts.action == "" then
-        return
+        return nil
       end
 
       -- handle starting insert mode at the bottom of our file
@@ -183,7 +183,7 @@ function M.search(args)
       "--preview-window=wrap"
     }
   }
-  opts = util.extend(args, opts)
+  opts = util.extend(opts, args)
 
   if zk_config.fuzzy_finder == "fzf" and vim.fn.executable("fzf") then
     return handle_fzf(opts)

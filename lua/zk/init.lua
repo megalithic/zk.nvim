@@ -2,6 +2,24 @@ local util = require("zk.util")
 
 local M = {}
 
+function M.ft_setup()
+  if vim.bo.filetype == "markdown" then
+    -- FIXME: for some reason i get _no_ table passed through on v/s/x mode binding
+    vim.api.nvim_set_keymap(
+      "x",
+      "<CR>",
+      "<cmd>lua require('zk.command').create_note_link({})<cr>",
+      {noremap = true, silent = false}
+    )
+    vim.api.nvim_set_keymap(
+      "n",
+      "<CR>",
+      "<cmd>lua require('zk.command').create_note_link({title = vim.fn.expand('<cword>')})<cr>",
+      {noremap = true, silent = false}
+    )
+  end
+end
+
 function M.setup(opts)
   local config_values = {
     debug = false,
@@ -20,22 +38,6 @@ function M.setup(opts)
     vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it.")
     return
   end
-
-  -- TODO: figure out how best to implement keybindings for only markdown ft
-
-  -- FIXME: for some reason i get _no_ table passed through on v/s/x mode binding
-  vim.api.nvim_set_keymap(
-    "x",
-    "<CR>",
-    "<cmd>lua require('zk.command').create_note_link({})<cr>",
-    {noremap = true, silent = false}
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<CR>",
-    "<cmd>lua require('zk.command').create_note_link({title = vim.fn.expand('<cword>')})<cr>",
-    {noremap = true, silent = false}
-  )
 end
 
 return M
