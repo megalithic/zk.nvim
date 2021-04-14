@@ -39,18 +39,18 @@ function M.extend(opts, target)
   return opts
 end
 
-M.get_visual_selection = function()
+function M.get_visual_selection()
   local reg = "z"
   vim.cmd([[noau normal! "zy]])
   return {reg = reg, contents = vim.fn.getreg(reg)}
 end
 
-M.set_visual_selection = function(reg)
+function M.set_visual_selection(reg)
   vim.cmd([[noau normal! "zy]])
   return {reg = reg, contents = vim.fn.getreg(reg)}
 end
 
-M.make_link_text = function(title, path)
+function M.make_link_text(title, path)
   if title == nil or title == "" then
     return
   end
@@ -70,13 +70,14 @@ function M.get_lines(bufnr, startLine, endLine)
   return vim.api.nvim_buf_get_lines(bufnr, startLine, endLine, true)
 end
 
-M.replace_selection_with_link_text = function(o, n)
+-- replaces all occurrences (in current buffer) of the given `o` string with the `n` string
+function M.replace_selection_with_link_text(o, n)
   local bufnr = vim.api.nvim_get_current_buf()
   local offset = math.max(vim.fn.line("w0") - 1, 0)
   local range = math.min(vim.fn.line("w$"), vim.api.nvim_buf_line_count(bufnr))
   local lines = M.get_lines(bufnr, offset, range)
 
-  for i, _line in ipairs(lines) do
+  for i, _ in ipairs(lines) do
     local _, found = lines[i]:find(o)
 
     if found then
@@ -92,23 +93,4 @@ M.replace_selection_with_link_text = function(o, n)
   end
 end
 
-M.escape_chars = function(string)
-  return string.gsub(
-    string,
-    "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*]",
-    {
-      ["\\"] = "\\\\",
-      ["-"] = "\\-",
-      ["("] = "\\(",
-      [")"] = "\\)",
-      ["["] = "\\[",
-      ["]"] = "\\]",
-      ["{"] = "\\{",
-      ["}"] = "\\}",
-      ["?"] = "\\?",
-      ["+"] = "\\+",
-      ["*"] = "\\*"
-    }
-  )
-end
 return M

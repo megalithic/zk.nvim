@@ -15,7 +15,7 @@ let g:loaded_zk = 1
 " NOTE: we require that the user runs setup themselves.."
 " lua require('zk').setup({})
 
-autocmd! FileType markdown lua require('zk').ft_setup()
+autocmd FileType markdown lua require('zk').setup_keymaps()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

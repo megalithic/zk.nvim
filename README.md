@@ -4,9 +4,13 @@
 
 A lightweight neovim, _lua-based_ wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
-The primary goals of this plugin are to provide handy maps, commands, and
-user-interface elements around the fantastic golang zettelkasten project,
-[`zk`](https://github.com/mickael-menu/zk).
+The primary goals of this plugin are to provide handy maps, commands, and user-interface elements around the fantastic golang zettelkasten project, [`zk`](https://github.com/mickael-menu/zk).
+
+For more information with how to fully use `zk`, please visit [`zk's docs`](https://github.com/mickael-menu/zk/tree/main/docs)
+
+[`LSP` support within `zk`](https://github.com/mickael-menu/zk/pull/21) is new and still under development. It works quite well as-is, though. 😄
+  * [nvim-lspconfig setup](https://github.com/mickael-menu/zk/pull/21#issuecomment-812773586)
+  * [coc.nvim setup](https://github.com/mickael-menu/zk/pull/21#issue-608099016)
 
 
 ## Prerequisites
@@ -14,6 +18,7 @@ user-interface elements around the fantastic golang zettelkasten project,
 * `nvim-0.5.0` or higher
 * For fzf support: [nvim-fzf](https://github.com/vijaymarupudi/nvim-fzf)
 * For telescope.nvim support: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+
 
 ## Install
 
@@ -49,16 +54,14 @@ require("zk").setup({
 
 ## Usage
 
-For all usages of this plugin, the parlance of `notebook` is common place, and
-refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`. These `notebooks`
-also relate to your [`group`](https://github.com/mickael-menu/zk/blob/main/docs/config-group.md) setup within your `config.toml`.
-
+For all usages of this plugin, the parlance of `notebook` is common place, and refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`; or more specifically, a `notebook` is any directory that contains a `.zk` directory (think of it like a `.git`-controlled directory). 
+These `notebooks` also relate to your [`groups`](https://github.com/mickael-menu/zk/blob/main/docs/config-group.md) setup within your `config.toml`.
 
 #### Install [`zk`](https://github.com/mickael-menu/zk)
 
 Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` is installed in your system's `PATH`).
 
-```viml
+```vim
 :ZkInstall
 ```
 
@@ -88,7 +91,7 @@ lua-based API, `nvim-fzf`.
 
 _Future support for `telescope.nvim` integration, coming soon._
 
-```viml
+```vim
 :lua require('zk.command').search({ query = "hiring NOT onboarding" })
 ```
 
