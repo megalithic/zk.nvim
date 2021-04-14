@@ -93,7 +93,12 @@ _Default arguments:_
 notes, notebooks, etc. Supports interacting with `fzf`, via flexible and fast
 lua-based API, `nvim-fzf`. 
 
-_Future support for `telescope.nvim` integration, coming soon._
+For `telescope.nvim` support, you'll need to ensure it is installed per their README. 
+Then, to load the zk.nvim telescope extension, add the following to your nvim config:
+
+```lua
+require("telescope").load_extension("zk_list")
+```
 
 ```vim
 :lua require('zk.command').search({ query = "hiring NOT onboarding" })
