@@ -56,10 +56,10 @@ function M.new(...)
 end
 
 function M.search(...)
-  local fzf_exists, _ = pcall(require, "fzf-commands")
+  local fzf_exists, _ = pcall(require, "fzf")
   if zk_config.fuzzy_finder == "fzf" and not fzf_exists then
     vim.api.nvim_err_writeln(
-      "[zk.nvim] in order to use fzf, https://github.com/vijaymarupudi/nvim-fzf-commands must be installed."
+      "[zk.nvim] in order to use fzf, https://github.com/vijaymarupudi/nvim-fzf must be installed."
     )
     return
   end
@@ -76,6 +76,7 @@ function M.search(...)
 end
 
 function M.create_note_link(args)
+  args = args or {}
   local opts = {
     title = "",
     action = "vnew",

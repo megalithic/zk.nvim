@@ -65,6 +65,8 @@ Install the [`zk`](https://github.com/mickael-menu/zk) binary (as long as `go` i
 :ZkInstall
 ```
 
+---
+
 #### Create a new note
 
 ```viml
@@ -82,6 +84,8 @@ _Default arguments:_
   start_insert_mode = true
 }
 ```
+
+---
 
 #### Search/filtering of notes
 
@@ -105,6 +109,8 @@ _Default arguments:_
 }
 ```
 
+---
+
 #### Generate a new note and inline link
 
 Quickly change the word under cursor (or visually selected) to markdown or
@@ -123,6 +129,23 @@ _Default arguments:_
   action = "vnew",
   open_note_on_creation = true
 }
+```
+
+_Default keymaps:_
+
+```lua
+vim.api.nvim_set_keymap(
+  "x",
+  "<CR>",
+  "<cmd>lua require('zk.command').create_note_link({})<cr>",
+  {noremap = true, silent = false}
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<CR>",
+  "<cmd>lua require('zk.command').create_note_link({title = vim.fn.expand('<cword>')})<cr>",
+  {noremap = true, silent = false}
+)
 ```
 
 ### Credit
