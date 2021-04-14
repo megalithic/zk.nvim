@@ -93,6 +93,7 @@ function M.new(args)
 
       -- TODO: this assumes our success output is our file name
       vim.cmd(string.format("%s %s %s", opts.action, output[1], start_insert_mode))
+      vim.cmd("w | e") -- this should force the buffer to reattach the LS client to the buffer
     end
   )[1] -- again, we assume this is always a single item table
 end
