@@ -114,10 +114,6 @@ local function handle_fzf(opts)
   local preview = "head -n $FZF_PREVIEW_LINES -- {-1}"
   local cmd = string.format("%s list --quiet --format path", base_cmd)
 
-  if opts.notebook ~= nil and opts.notebook ~= "" then
-    cmd = string.format("%s %s", cmd, opts.notebook)
-  end
-
   if opts.tags ~= nil and opts.tags ~= "" then
     cmd = string.format("%s --tag %s", cmd, opts.tags)
   end
@@ -126,15 +122,21 @@ local function handle_fzf(opts)
     cmd = string.format("%s --match %s", cmd, vim.fn.fnameescape(opts.query))
   end
 
+  if opts.notebook ~= nil and opts.notebook ~= "" then
+    cmd = string.format("%s %s", cmd, opts.notebook)
+  end
+
   if vim.fn.executable("bat") == 1 then
     -- NOTE: 5 is the number that prevents overflow of the preview window when using bat
-    preview = "bat -p --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always -- {-1}"
+    preview = "bat -p --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always {}"
+    opts.fzf_opts["--preview"] = ("--preview=%s"):format(vim.fn.shellescape(preview))
   end
+
+  local fzf_opts = table.concat(opts.fzf_opts, " ")
 
   coroutine.wrap(
     function()
-      -- TODO: https://github.com/mickael-menu/zk/blob/be78def5aa0d5952f00dd92840763f011d596c28/adapter/fzf/fzf.go#L73-L87
-      local choices = fzf.fzf(cmd, ("--preview=%s --expect=ctrl-s,ctrl-t,ctrl-v"):format(vim.fn.shellescape(preview)))
+      local choices = fzf.fzf(cmd, fzf_opts)
 
       if not choices then
         return
@@ -165,15 +167,22 @@ local function handle_telescope(_)
 end
 
 function M.search(args)
-  local opts = {
-    notebook = "",
-    query = "",
-    tags = "",
-    fzf_opts = {
+  print("search args: ", vim.inspect(args))
+
+  if type(args) == "string" then
+    args = { query = args }
+  else
+    args = args or {}
+  end
+
+  -- TODO: allow for user-defined fzf_opts..
+  local fzf_opts =
+    args.fzf_opts or
+    {
       "--delimiter=\x01",
       "--tiebreak=begin",
       "--ansi",
-      "--exact",
+      -- "--exact",
       "--tabstop=4",
       "--height=100%",
       "--layout=reverse",
@@ -181,10 +190,18 @@ function M.search(args)
       "--no-hscroll",
       -- Don't highlight search terms
       "--color=hl:-1,hl+:-1",
-      "--preview-window=wrap"
+      "--preview-window=wrap",
+      "--expect=ctrl-s,ctrl-t,ctrl-v"
     }
+  local opts = {
+    notebook = "",
+    query = "",
+    tags = "",
+    fzf_opts = fzf_opts
   }
   opts = util.extend(opts, args)
+
+  print("search opts: ", vim.inspect(opts))
 
   if zk_config.fuzzy_finder == "fzf" and vim.fn.executable("fzf") then
     return handle_fzf(opts)

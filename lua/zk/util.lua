@@ -58,7 +58,9 @@ function M.make_link_text(title, path)
   if zk_config.link_format == "markdown" then
     return string.format("[%s](%s)", title, vim.fn.shellescape(path))
   elseif zk_config.link_format == "wikilink" then
-    return string.format("[[%s]]")
+    -- TODO: look into supporting link | description:
+    -- https://github.com/vimwiki/vimwiki/tree/dev#basic-markup
+    return string.format("[[%s|%s]]", vim.fn.shellescape(path), title)
   end
 end
 
@@ -68,6 +70,13 @@ end
 
 function M.get_lines(bufnr, startLine, endLine)
   return vim.api.nvim_buf_get_lines(bufnr, startLine, endLine, true)
+end
+
+function M.conditional_cr(opts)
+  opts = opts or {}
+  if vim.fn.pumvisible() == 0 then
+    require("zk.command").create_note_link(opts)
+  end
 end
 
 -- replaces all occurrences (in current buffer) of the given `o` string with the `n` string

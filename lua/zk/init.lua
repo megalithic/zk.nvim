@@ -3,20 +3,24 @@ local util = require("zk.util")
 local M = {}
 
 function M.setup_keymaps()
-  if zk_config.enable_default_keymaps and vim.bo.filetype == "markdown" then
-    -- FIXME: for some reason i get _no_ table passed through on v/s/x mode binding
+  if zk_config.default_keymaps and vim.bo.filetype == "markdown" then
+    -- FIXME: `<CR>` seems to break completion popups confirmation
     vim.api.nvim_set_keymap(
       "x",
       "<CR>",
-      "<cmd>lua require('zk.command').create_note_link({})<cr>",
+      "<cmd>lua require('zk.command').create_note_link()<cr>",
+      -- "<cmd>lua require('zk.util').conditional_cr()<cr>",
       {noremap = true, silent = false}
     )
     vim.api.nvim_set_keymap(
       "n",
       "<CR>",
       "<cmd>lua require('zk.command').create_note_link({title = vim.fn.expand('<cword>')})<cr>",
+      -- "<cmd>lua require('zk.util').conditional_cr({title = vim.fn.expand('<cword>')})<cr>",
       {noremap = true, silent = false}
     )
+  -- vim.api.nvim_set_keymap("n", "<leader>zf", "<c-u>ZkSearch<space>", {noremap = true, silent = false})
+  -- vim.cmd([[nnoremap <leader>zf :<c-u>ZkSearch<space>]])
   end
 end
 
@@ -25,19 +29,20 @@ function M.setup(opts)
   local config_values = {
     debug = false,
     log = true,
-    enable_default_keymaps = true,
+    default_keymaps = true,
     default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
     fuzzy_finder = "fzf", -- or "telescope"
-    link_format = "markdown" -- or "wikilink"
+    link_format = "wikilink" -- or "wikilink"
   }
 
   _G.zk_config = util.extend(opts, config_values)
 
-  vim.cmd("command! ZkInstall :lua require('zk.command').install_zk()")
-
   if vim.fn.executable("zk") == 0 then
+    vim.cmd([[command! ZkInstall :lua require('zk.command').install_zk()]])
     vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it.")
     return
+  else
+    vim.cmd([[command! -nargs=1 ZkSearch call luaeval('require("zk.command").search(_A)', <f-args>)]])
   end
 end
 
