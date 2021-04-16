@@ -93,8 +93,12 @@ function M.create_note_link(args)
 
   if opts.title ~= nil and opts.title ~= "" then
     local new_note_path = M.new({title = opts.title, notebook = opts.notebook, action = ""})
-    local link_output = util.make_link_text(opts.title, vim.fn.fnameescape(new_note_path))
-    util.replace_selection_with_link_text(opts.title, link_output)
+
+    -- don't reformat the text if we're already in a `[]` pair
+    if not util.is_linkified(opts.title) then
+      local link_output = util.make_link_text(opts.title, vim.fn.fnameescape(new_note_path))
+      util.replace_selection_with_link_text(opts.title, link_output)
+    end
 
     if opts.open_note_on_creation then
       vim.cmd(string.format("%s %s", opts.action, new_note_path))
