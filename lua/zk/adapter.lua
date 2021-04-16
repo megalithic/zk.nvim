@@ -167,10 +167,8 @@ local function handle_telescope(_)
 end
 
 function M.search(args)
-  print("search args: ", vim.inspect(args))
-
   if type(args) == "string" then
-    args = { query = args }
+    args = {query = args}
   else
     args = args or {}
   end
@@ -200,8 +198,6 @@ function M.search(args)
     fzf_opts = fzf_opts
   }
   opts = util.extend(opts, args)
-
-  print("search opts: ", vim.inspect(opts))
 
   if zk_config.fuzzy_finder == "fzf" and vim.fn.executable("fzf") then
     return handle_fzf(opts)
