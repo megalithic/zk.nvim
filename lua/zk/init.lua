@@ -37,13 +37,14 @@ function M.setup(opts)
 
   _G.zk_config = util.extend(opts, config_values)
 
+  vim.cmd([[command! ZkInstall :lua require('zk.command').install_zk()]])
+
   if vim.fn.executable("zk") == 0 then
-    vim.cmd([[command! ZkInstall :lua require('zk.command').install_zk()]])
     vim.api.nvim_err_writeln("[zk.nvim] zk is not installed. Call :ZkInstall to install it.")
     return
-  else
-    vim.cmd([[command! -nargs=1 ZkSearch call luaeval('require("zk.command").search(_A)', <f-args>)]])
   end
+
+  vim.cmd([[command! -nargs=1 ZkSearch call luaeval('require("zk.command").search(_A)', <f-args>)]])
 end
 
 return M
