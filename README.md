@@ -44,7 +44,7 @@ For more information with how to fully use `zk`, please visit [`zk's docs`](http
 require("zk").setup({
   debug = false,
   log = true,
-  enable_default_keymaps = true,
+  default_keymaps = true,
   default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
   fuzzy_finder = "fzf", -- or "telescope"
   link_format = "markdown" -- or "wikilink"
@@ -89,14 +89,16 @@ _Default arguments:_
 
 #### Search/filtering of notes
 
-`zk` offers such a wealth of power with searching, filtering and more for your
-notes, notebooks, etc. Supports interacting with `fzf`, via flexible and fast
-lua-based API, `nvim-fzf`. 
+`zk` offers such a wealth of power with searching, filtering and more for your notes, notebooks, etc. 
+
+Presently only supports interacting with `fzf`, via a flexible and fast lua-based API plugin, `nvim-fzf`. Searching via vim command, `:ZkSearch` only supports query searches at the moment. Using the lua command, the option to pass tags, notebook, _and_ query are supported.
 
 _Future support for `telescope.nvim` integration, coming soon._
 
 ```vim
 :lua require('zk.command').search({ query = "hiring NOT onboarding" })
+" or
+:ZkSearch "hiring NOT onboarding"
 ```
 
 _Default arguments:_

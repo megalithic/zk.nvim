@@ -76,6 +76,8 @@ function M.search(...)
 end
 
 function M.create_note_link(args)
+  -- FIXME/TODO: need to create the note link based on the current notebook; and
+  -- set that as a default instead of `""`.
   args = args or {}
   local opts = {
     title = "",
@@ -86,10 +88,13 @@ function M.create_note_link(args)
 
   opts = util.extend(opts, args)
 
+  -- we came in by way of v/x/s modes, so we should grab the selection
   if opts.title == "" then
     local selection = util.get_visual_selection()
     opts.title = selection.contents
   end
+
+  print("create_note_link(title) -> ", opts.title)
 
   if opts.title ~= nil and opts.title ~= "" then
     local new_note_path = M.new({title = opts.title, notebook = opts.notebook, action = ""})
