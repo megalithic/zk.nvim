@@ -47,7 +47,7 @@ require("zk").setup({
   default_keymaps = true,
   default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
   fuzzy_finder = "fzf", -- or "telescope"
-  link_format = "markdown" -- or "wikilink"
+  link_format = "markdown" -- or "wiki"
 })
 ```
 
@@ -116,7 +116,7 @@ _Default arguments:_
 #### Generate a new note and inline link
 
 Quickly change the word under cursor (or visually selected) to markdown or
-wikilink syntax:
+wiki syntax:
 
 ```viml
 :lua require('zk.command').create_note_link({ title = "my note title", notebook = "wiki", action = "e" })

@@ -32,7 +32,7 @@ function M.setup(opts)
     default_keymaps = true,
     default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "",
     fuzzy_finder = "fzf", -- or "telescope"
-    link_format = "wikilink" -- or "wikilink"
+    link_format = "markdown" -- or "wiki"
   }
 
   _G.zk_config = util.extend(opts, config_values)

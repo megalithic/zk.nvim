@@ -75,7 +75,7 @@ function M.make_link_text(title, path)
 
   if zk_config.link_format == "markdown" then
     return string.format("[%s](%s)", title, vim.fn.shellescape(path))
-  elseif zk_config.link_format == "wikilink" then
+  elseif zk_config.link_format == "wiki" then
     -- TODO: look into supporting link | description:
     -- https://github.com/vimwiki/vimwiki/tree/dev#basic-markup
     return string.format("[[%s|%s]]", vim.fn.shellescape(path), title)
