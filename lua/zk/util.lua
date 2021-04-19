@@ -39,6 +39,11 @@ function M.extend(opts, target)
   return opts
 end
 
+function M.get_cursor()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return {row - 1, col}
+end
+
 function M.get_visual_selection()
   local reg = "z"
   vim.cmd([[noau normal! "zy]])
@@ -48,6 +53,19 @@ end
 function M.set_visual_selection(reg)
   vim.cmd([[noau normal! "zy]])
   return {reg = reg, contents = vim.fn.getreg(reg)}
+end
+
+-- FIXME: this is a super-naive solution to figure out if we're in a `[]`
+function M.is_linkified(str)
+  local current_line = vim.fn.getline(".")
+  local patterns = {
+    "%[" .. str .. "%]"
+    -- string.format("%{%s%}", str)
+  }
+
+  for _, pattern in ipairs(patterns) do
+    return nil ~= current_line:match(pattern)
+  end
 end
 
 function M.make_link_text(title, path)
@@ -64,12 +82,12 @@ function M.make_link_text(title, path)
   end
 end
 
-function M.set_lines(bufnr, startLine, endLine, lines)
-  return vim.api.nvim_buf_set_lines(bufnr, startLine, endLine, true, lines)
+function M.set_lines(bufnr, start_line, end_line, lines)
+  return vim.api.nvim_buf_set_lines(bufnr, start_line, end_line, true, lines)
 end
 
-function M.get_lines(bufnr, startLine, endLine)
-  return vim.api.nvim_buf_get_lines(bufnr, startLine, endLine, true)
+function M.get_lines(bufnr, start_line, end_line)
+  return vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, true)
 end
 
 function M.conditional_cr(opts)
