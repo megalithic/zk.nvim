@@ -1,7 +1,8 @@
 -- The interface to provide the available commands via lua to nvim
 
 local adapter = require("zk.adapter")
-local util = require("zk.util")
+local utils = require("zk.utils")
+local helpers = require("zk.helpers")
 
 local M = {}
 
@@ -76,8 +77,8 @@ function M.search(...)
 end
 
 function M.create_note_link(args)
-  -- FIXME/TODO: need to create the note link based on the current notebook; and
-  -- set that as a default instead of `""`.
+  -- FIXME/TODO: need to create the note link based on the current/derived notebook;
+  -- and set that as a default instead of `""`.
   args = args or {}
   local opts = {
     title = "",
@@ -86,12 +87,11 @@ function M.create_note_link(args)
     open_note_on_creation = true
   }
 
-  opts = util.extend(opts, args)
+  opts = utils.extend(opts, args)
 
   -- we came in by way of v/x/s modes, so we should grab the selection
   if opts.title == "" then
-    local selection = util.get_visual_selection()
-    opts.title = selection.contents
+    opts.title = helpers.get_visual().str
   end
 
   print("create_note_link(title) -> ", opts.title)
@@ -100,9 +100,9 @@ function M.create_note_link(args)
     local new_note_path = M.new({title = opts.title, notebook = opts.notebook, action = ""})
 
     -- don't reformat the text if we're already in a `[]` pair
-    if not util.is_linkified(opts.title) then
-      local link_output = util.make_link_text(opts.title, vim.fn.fnameescape(new_note_path))
-      util.replace_selection_with_link_text(opts.title, link_output)
+    if not helpers.is_linkified(opts.title) then
+      local link_output = helpers.make_link_text(opts.title, vim.fn.fnameescape(new_note_path))
+      helpers.replace_selection_with_link_text(opts.title, link_output)
     end
 
     if opts.open_note_on_creation then

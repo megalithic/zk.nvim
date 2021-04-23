@@ -1,4 +1,4 @@
-# zk.nvim
+# 🔖 zk.nvim
 
 **NOTE:** This plugin is presently _WIP_
 
@@ -13,29 +13,35 @@ For more information with how to fully use `zk`, please visit [`zk's docs`](http
   * [coc.nvim setup](https://github.com/mickael-menu/zk/pull/21#issue-608099016)
 
 
-## Prerequisites
+## ⚡️ Prerequisites
+
+***Required:***
 
 * `nvim-0.5.0` or higher
+* [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+
+_Optional:_
+
 * For fzf support: [nvim-fzf](https://github.com/vijaymarupudi/nvim-fzf)
 * For telescope.nvim support: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 
 
-## Install
+## 📦 Install
 
-#### paq-nvim
+#### [paq-nvim](https://github.com/savq/paq-nvim)
 
 `paq { "megalithic/zk.nvim" }`
 
-#### packer.nvim
+#### [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 `use { "megalithic/zk.nvim" }`
 
-#### vim-plug
+#### [vim-plug](https://github.com/junegunn/vim-plug)
 
 `Plug "megalithic/zk.nvim"`
 
 
-## Configuration
+## ⚙️  Configuration
 
 
 ```lua
@@ -52,7 +58,7 @@ require("zk").setup({
 ```
 
 
-## Usage
+## 🚀 Usage
 
 For all usages of this plugin, the parlance of `notebook` is common place, and refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`; or more specifically, a `notebook` is any directory that contains a `.zk` directory (think of it like a `.git`-controlled directory). 
 These `notebooks` also relate to your [`groups`](https://github.com/mickael-menu/zk/blob/main/docs/config-group.md) setup within your `config.toml`.
@@ -150,8 +156,9 @@ vim.api.nvim_set_keymap(
 )
 ```
 
-### Credit
+### 👍 Credits
 
-- Mickael Menu (https://github.com/mickael-menu/zk)
-- Evan Travers (http://evantravers.com/articles/tags/zettelkasten/)
-- Zettelkasten Introduction (https://zettelkasten.de/introduction/#why-are-we-so-interested-in-luhmann-s-zettelkasten)
+- [Mickael Menu](https://github.com/mickael-menu/zk)
+- [Evan Travers](http://evantravers.com/articles/tags/zettelkasten/)
+- [Zettelkasten Introduction](https://zettelkasten.de/introduction/#why-are-we-so-interested-in-luhmann-s-zettelkasten)
+- [neuron-v2.nvim](https://github.com/frandsoh/neuron-v2.nvim)
