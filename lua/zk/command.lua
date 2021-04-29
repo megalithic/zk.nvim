@@ -5,10 +5,10 @@ local util = require("zk.util")
 
 local M = {}
 
-local zk_repo_path = "github.com/mickael-menu/zk"
+local zk_repo_path = "github.com/mickael-menu/zk@HEAD"
 
 local function call_go_cmd()
-  local cmd = {"go", "get", "-u", zk_repo_path}
+  local cmd = {"go", "get", "-tags", '"fts5 icu"', "-u", zk_repo_path}
   vim.fn.jobstart(
     cmd,
     {
@@ -29,23 +29,22 @@ function M.install_zk()
   end
 
   if vim.fn.executable("zk") == 1 then
-    local answer = vim.fn.input("[zk.nvim] latest zk already installed, do you want update? Y/n -> ")
+    local answer = vim.fn.input("[zk.nvim] latest zk already installed, do you want update? y/n -> ")
     answer = string.lower(answer)
     while answer ~= "y" and answer ~= "n" do
-      answer = vim.fn.input("[zk.nvim] please answer Y or n -> ")
+      answer = vim.fn.input("[zk.nvim] please answer y or n -> ")
       answer = string.lower(answer)
     end
 
+    vim.api.nvim_out_write("\n")
+    vim.cmd([[redraw]])
     if answer == "n" then
-      vim.api.nvim_out_write("\n")
-      vim.cmd([[redraw]])
-
       return
     end
 
-    vim.api.nvim_out_write("[zk.nvim] updating zk..\n")
+    vim.api.nvim_out_write("[zk.nvim] updating zk...\n")
   else
-    print("[zk.nvim] installing zk..")
+    print("[zk.nvim] installing zk...")
   end
 
   call_go_cmd()
