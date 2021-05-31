@@ -24,9 +24,9 @@ function M.setup_keymaps()
   end
 end
 
-function M.setup(opts)
-  opts = opts or {}
-  local config_values = {
+function M.setup(args)
+  args = args or {}
+  local defaults = {
     debug = false,
     log = true,
     default_keymaps = true,
@@ -35,7 +35,7 @@ function M.setup(opts)
     link_format = "markdown" -- or "wiki"
   }
 
-  _G.zk_config = util.extend(opts, config_values)
+  _G.zk_config = util.extend(defaults, args)
 
   vim.cmd([[command! ZkInstall :lua require('zk.command').install_zk()]])
 
