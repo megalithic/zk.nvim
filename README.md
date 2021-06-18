@@ -150,6 +150,20 @@ vim.api.nvim_set_keymap(
 )
 ```
 
+#### Telescope support
+
+Load the `zk` extension to enable `zk` support in `telescope`.
+
+```lua
+require('telescope').load_extension('zk')
+```
+
+Register a keymap to open the picker for the zk notes.
+
+```vim
+nnoremap <leader>n <cmd>lua require('telescope').extensions.zk.zk_notes()<cr>
+```
+
 ### Credit
 
 - Mickael Menu (https://github.com/mickael-menu/zk)
