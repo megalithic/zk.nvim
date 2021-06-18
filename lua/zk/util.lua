@@ -64,8 +64,12 @@ function M.is_linkified(str)
   }
 
   for _, pattern in ipairs(patterns) do
-    return nil ~= current_line:match(pattern)
+    if current_line:match(pattern) then
+        return true
+    end
   end
+
+  return false
 end
 
 function M.make_link_text(title, path)
