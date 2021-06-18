@@ -119,8 +119,6 @@ function M.replace_selection_with_link_text(o, n)
 
       vim.api.nvim_command("noautocmd :update")
     end
-
-    ::continue::
   end
 end
 
