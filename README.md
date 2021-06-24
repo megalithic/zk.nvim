@@ -54,7 +54,7 @@ require("zk").setup({
 
 ## Usage
 
-For all usages of this plugin, the parlance of `notebook` is common place, and refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`; or more specifically, a `notebook` is any directory that contains a `.zk` directory (think of it like a `.git`-controlled directory). 
+For all usages of this plugin, the parlance of `notebook` is common place, and refers to a sub-directory within your root `ZK_NOTEBOOK_DIR`; or more specifically, a `notebook` is any directory that contains a `.zk` directory (think of it like a `.git`-controlled directory).
 These `notebooks` also relate to your [`groups`](https://github.com/mickael-menu/zk/blob/main/docs/config-group.md) setup within your `config.toml`.
 
 #### Install [`zk`](https://github.com/mickael-menu/zk)
@@ -89,7 +89,7 @@ _Default arguments:_
 
 #### Search/filtering of notes
 
-`zk` offers such a wealth of power with searching, filtering and more for your notes, notebooks, etc. 
+`zk` offers such a wealth of power with searching, filtering and more for your notes, notebooks, etc.
 
 Presently only supports interacting with `fzf`, via a flexible and fast lua-based API plugin, `nvim-fzf`. Searching via vim command, `:ZkSearch` only supports query searches at the moment. Using the lua command, the option to pass tags, notebook, _and_ query are supported.
 

@@ -129,8 +129,9 @@ local function handle_fzf(opts)
   if vim.fn.executable("bat") == 1 then
     -- NOTE: 5 is the number that prevents overflow of the preview window when using bat
     preview = "bat -p --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always {}"
-    opts.fzf_opts["--preview"] = ("--preview=%s"):format(vim.fn.shellescape(preview))
   end
+
+  opts.fzf_opts["--preview"] = ("--preview=%s"):format(vim.fn.shellescape(preview))
 
   local fzf_opts = table.concat(opts.fzf_opts, " ")
 
