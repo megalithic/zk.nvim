@@ -5,11 +5,38 @@ local make_entry = require("telescope.make_entry")
 local action_set = require("telescope.actions.set")
 local action_state = require("telescope.actions.state")
 local conf = require("telescope.config").values
+local Job = require'plenary.job'
+
+local new_note = function(title)
+    local args = {"new", "-p", "-t", title}
+    local cwd = _G.zk_config.default_notebook_path
+    local path
+
+    local job = Job:new({
+        command = "zk",
+        args = args,
+        cwd = cwd,
+        on_stdout = function(_, line)
+          if not line or line == "" then
+            return
+          end
+          path = line
+        end,
+    })
+    job:sync()
+    vim.cmd(":edit " .. path)
+end
 
 local open_note = function(prompt_bufnr)
     local selection = action_state.get_selected_entry(prompt_bufnr)
-    actions.close(prompt_bufnr)
-    vim.cmd(":edit " .. selection.filename)
+    if selection == nil then
+        local title = action_state.get_current_line(prompt_bufnr)
+        actions.close(prompt_bufnr)
+        new_note(title)
+    else
+        actions.close(prompt_bufnr)
+        vim.cmd(":edit " .. selection.filename)
+    end
 end
 
 local telescope_zk_notes = function(opts)
