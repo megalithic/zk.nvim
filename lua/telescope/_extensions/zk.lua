@@ -93,7 +93,7 @@ local telescope_zk_grep = function(opts)
 
     local zk_notes_grep = finders.new_job(function(prompt)
         if not prompt or prompt == "" then
-            return nil
+            return { "zk", "list", "--footer", "\n", "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
         end
         return { "zk", "list", "--footer", "\n", "-m", prompt, "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
       end,
