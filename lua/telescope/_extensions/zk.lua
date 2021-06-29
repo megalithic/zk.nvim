@@ -95,6 +95,11 @@ local telescope_zk_grep = function(opts)
         if not prompt or prompt == "" then
             return { "zk", "list", "--footer", "\n", "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
         end
+        local parts = vim.split(prompt, "%s")
+        for i, part in pairs(parts) do
+            parts[i] = part .. "*"
+        end
+        prompt = table.concat(parts, " ")
         return { "zk", "list", "--footer", "\n", "-m", prompt, "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
       end,
       opts.entry_maker,
