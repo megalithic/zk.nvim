@@ -1,4 +1,5 @@
 local pickers = require("telescope.pickers")
+local previewers = require("telescope.previewers")
 local finders = require("telescope.finders")
 local sorters = require("telescope.sorters")
 local actions = require("telescope.actions")
@@ -37,6 +38,11 @@ local open_note = function(prompt_bufnr)
     else
         actions.close(prompt_bufnr)
         vim.cmd(":edit " .. selection.filename)
+        if (#selection.text > 0) then
+            vim.cmd "norm! gg"
+            vim.fn.search(selection.text, "W")
+            vim.cmd "norm! zz"
+        end
     end
 end
 
@@ -99,6 +105,7 @@ local telescope_zk_backlinks = function(opts)
         ordinal = 1,
         value = 1,
         filename = 3,
+        text = 4,
     }
 
     local mt_string_entry = {
@@ -107,6 +114,8 @@ local telescope_zk_backlinks = function(opts)
         end
     }
 
+    local current = vim.fn.expand('%:t:r')
+
     -- TODO: can I use _G.zk_config here?
     opts.entry_maker = function(line)
         local tmp_table = vim.split(line, "\t");
@@ -114,10 +123,48 @@ local telescope_zk_backlinks = function(opts)
             line,
             tmp_table[2],
             _G.zk_config.default_notebook_path .. "/" .. tmp_table[1],
+            current,
         }, mt_string_entry)
     end
 
-    local current = vim.fn.expand('%', ':t:r')
+    local search_cb_jump = function(self, bufnr, query)
+        if not query then return end
+        vim.api.nvim_buf_call(bufnr, function()
+            pcall(vim.fn.matchdelete, self.state.hl_id, self.state.winid)
+            vim.cmd "norm! gg"
+            vim.fn.search(query, "W")
+            vim.cmd "norm! zz"
+
+            self.state.hl_id = vim.fn.matchadd('TelescopePreviewMatch', query)
+        end)
+    end
+
+    local search_teardown = function(self)
+        if self.state and self.state.hl_id then
+            pcall(vim.fn.matchdelete, self.state.hl_id, self.state.hl_win)
+            self.state.hl_id = nil
+        end
+    end
+
+    local previewer = previewers.new_buffer_previewer {
+        title = "Grep Preview",
+        teardown = search_teardown,
+
+        get_buffer_by_name = function(_, entry)
+            return entry.filename
+        end,
+
+        define_preview = function(self, entry, status)
+            local text = entry.text
+
+            conf.buffer_previewer_maker(entry.filename, self.state.bufnr, {
+                bufname = self.state.bufname,
+                callback = function(bufnr)
+                    search_cb_jump(self, bufnr, text)
+                end
+            })
+        end
+    }
 
     local cmd = {
         "zk",
@@ -132,7 +179,7 @@ local telescope_zk_backlinks = function(opts)
         prompt_title = "Zk backlinks",
         finder = finders.new_oneshot_job(vim.tbl_flatten(cmd), opts),
         sorter = conf.generic_sorter({}),
-        previewer = conf.file_previewer(opts),
+        previewer = previewer,
         attach_mappings = function(_, map)
             action_set.select:replace(open_note)
             return true
