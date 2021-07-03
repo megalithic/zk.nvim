@@ -71,8 +71,65 @@ local telescope_zk_notes = function(opts)
 
     local cmd = { "zk", "list", "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
 
+    local cmd = {
+        "zk",
+        "list",
+        "-q",
+        "-P",
+        "--format",
+        "{{ path }}\t{{ title }}",
+    }
     pickers.new({}, {
         prompt_title = "Zk notes",
+        finder = finders.new_oneshot_job(vim.tbl_flatten(cmd), opts),
+        sorter = conf.generic_sorter({}),
+        previewer = conf.file_previewer(opts),
+        attach_mappings = function(_, map)
+            action_set.select:replace(open_note)
+            return true
+        end
+    }):find()
+end
+
+local telescope_zk_backlinks = function(opts)
+    opts = opts or {}
+
+    local lookup_keys = {
+        display = 2,
+        ordinal = 1,
+        value = 1,
+        filename = 3,
+    }
+
+    local mt_string_entry = {
+        __index = function(t, k)
+            return rawget(t, rawget(lookup_keys, k))
+        end
+    }
+
+    -- TODO: can I use _G.zk_config here?
+    opts.entry_maker = function(line)
+        local tmp_table = vim.split(line, "\t");
+        return setmetatable({
+            line,
+            tmp_table[2],
+            _G.zk_config.default_notebook_path .. "/" .. tmp_table[1],
+        }, mt_string_entry)
+    end
+
+    local current = vim.fn.expand('%', ':t:r')
+
+    local cmd = {
+        "zk",
+        "list",
+        "--footer", "\n",
+        "--link-to", current,
+        "-q",
+        "-P",
+        "--format", "{{ path }}\t{{ title }}"
+    }
+    pickers.new({}, {
+        prompt_title = "Zk backlinks",
         finder = finders.new_oneshot_job(vim.tbl_flatten(cmd), opts),
         sorter = conf.generic_sorter({}),
         previewer = conf.file_previewer(opts),
@@ -137,5 +194,6 @@ return require("telescope").register_extension({
     exports = {
         zk_notes = telescope_zk_notes,
         zk_grep = telescope_zk_grep,
+        zk_backlinks = telescope_zk_backlinks,
     }
 })
