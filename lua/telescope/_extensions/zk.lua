@@ -38,7 +38,7 @@ local open_note = function(prompt_bufnr)
     else
         actions.close(prompt_bufnr)
         vim.cmd(":edit " .. selection.filename)
-        if (#selection.text > 0) then
+        if (selection.text ~= nil and #selection.text > 0) then
             vim.cmd "norm! gg"
             vim.fn.search(selection.text, "W")
             vim.cmd "norm! zz"
