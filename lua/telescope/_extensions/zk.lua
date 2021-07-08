@@ -165,6 +165,10 @@ local telescope_zk_backlinks = function(opts)
             })
         end
     }
+    local notebook = '.'
+    if opts.notebook ~= nil then
+        notebook = opts.notebook
+    end
 
     local cmd = {
         "zk",
@@ -173,7 +177,8 @@ local telescope_zk_backlinks = function(opts)
         "--link-to", current,
         "-q",
         "-P",
-        "--format", "{{ path }}\t{{ title }}"
+        "--format", "{{ path }}\t{{ title }}",
+        notebook,
     }
     pickers.new({}, {
         prompt_title = "Zk backlinks",
