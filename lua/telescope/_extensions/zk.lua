@@ -91,16 +91,30 @@ local telescope_zk_grep = function(opts)
     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
     opts.entry_maker = create_entry_maker()
 
+    local notebook = '.'
+    if opts.notebook ~= nil then
+        notebook = opts.notebook
+    end
+
     local zk_notes_grep = finders.new_job(function(prompt)
+        local basic_cmd = {
+            "zk",
+            "list",
+            "--footer", "\n",
+            "-q",
+            "-P",
+            "--format", "{{ path }}\t{{ title }}",
+            notebook
+        }
         if not prompt or prompt == "" then
-            return { "zk", "list", "--footer", "\n", "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
+            return basic_cmd
         end
         local parts = vim.split(prompt, "%s")
         for i, part in pairs(parts) do
             parts[i] = part .. "*"
         end
         prompt = table.concat(parts, " ")
-        return { "zk", "list", "--footer", "\n", "-m", prompt, "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
+        return vim.tbl_flatten({basic_cmd, {"-m", prompt }})
       end,
       opts.entry_maker,
       opts.max_results,
