@@ -10,7 +10,6 @@ local Job = require'plenary.job'
 
 local new_note = function(title)
     local args = {"new", "-p", "-t", title}
-    local cwd = _G.zk_config.default_notebook_path
     local path
 
     local job = Job:new({
@@ -59,13 +58,13 @@ local create_entry_maker = function()
             return rawget(t, rawget(lookup_keys, k))
         end
     }
-    -- TODO: can I use _G.zk_config here?
+
     return function(line)
         local tmp_table = vim.split(line, "\t");
         return setmetatable({
             line,
-            tmp_table[2] or "",
-            _G.zk_config.default_notebook_path .. "/" .. tmp_table[1] or "",
+            tmp_table[2],
+            tmp_table[1],
         }, mt_string_entry)
     end
 end
@@ -116,13 +115,12 @@ local telescope_zk_backlinks = function(opts)
 
     local current = vim.fn.expand('%:t:r')
 
-    -- TODO: can I use _G.zk_config here?
     opts.entry_maker = function(line)
         local tmp_table = vim.split(line, "\t");
         return setmetatable({
             line,
             tmp_table[2],
-            _G.zk_config.default_notebook_path .. "/" .. tmp_table[1],
+            tmp_table[1],
             current,
         }, mt_string_entry)
     end
