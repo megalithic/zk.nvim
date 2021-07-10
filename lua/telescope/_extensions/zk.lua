@@ -242,6 +242,8 @@ local telescope_zk_grep = function(opts)
       sorter = sorters.empty(),
       attach_mappings = function(_, map)
         action_set.select:replace(open_note)
+        map('i', '<C-e>', create_note)
+        map('n', '<C-e>', create_note)
         return true
       end
     }):find()
