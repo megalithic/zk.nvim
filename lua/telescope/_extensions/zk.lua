@@ -74,8 +74,6 @@ local telescope_zk_notes = function(opts)
 
     opts.entry_maker = create_entry_maker()
 
-    local cmd = { "zk", "list", "-q", "-P", "--format", "{{ path }}\t{{ title }}" }
-
     local cmd = {
         "zk",
         "list",
@@ -84,6 +82,7 @@ local telescope_zk_notes = function(opts)
         "--format",
         "{{ path }}\t{{ title }}",
     }
+
     pickers.new({}, {
         prompt_title = "Zk notes",
         finder = finders.new_oneshot_job(vim.tbl_flatten(cmd), opts),
