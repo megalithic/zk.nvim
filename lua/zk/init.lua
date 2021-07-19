@@ -3,7 +3,7 @@ local util = require("zk.util")
 local M = {}
 
 function M.setup_keymaps()
-  if zk_config.default_keymaps and vim.bo.filetype == "markdown" then
+  if zk_config and zk_config.default_keymaps and vim.bo.filetype == "markdown" then
     -- FIXME: `<CR>` seems to break completion popups confirmation
     vim.api.nvim_set_keymap(
       "x",
