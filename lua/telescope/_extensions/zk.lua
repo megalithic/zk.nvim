@@ -8,6 +8,11 @@ local action_state = require("telescope.actions.state")
 local conf = require("telescope.config").values
 local Job = require'plenary.job'
 
+local edit_note = function(path)
+    vim.cmd(":edit " .. path)
+    vim.cmd "norm! G"
+end
+
 local new_note = function(title)
     local args = {"new", "-p", "-t", title}
     local path
@@ -25,7 +30,13 @@ local new_note = function(title)
     })
 
     job:sync()
-    vim.cmd(":edit " .. path)
+    edit_note(path)
+end
+
+local create_note = function(prompt_bufnr)
+    local title = action_state.get_current_line(prompt_bufnr)
+    actions.close(prompt_bufnr)
+    new_note(title)
 end
 
 local open_note = function(prompt_bufnr)
@@ -36,12 +47,7 @@ local open_note = function(prompt_bufnr)
         new_note(title)
     else
         actions.close(prompt_bufnr)
-        vim.cmd(":edit " .. selection.filename)
-        if (selection.text ~= nil and #selection.text > 0) then
-            vim.cmd "norm! gg"
-            vim.fn.search(selection.text, "W")
-            vim.cmd "norm! zz"
-        end
+        edit_note(selection.filename)
     end
 end
 
@@ -90,6 +96,8 @@ local telescope_zk_notes = function(opts)
         previewer = conf.file_previewer(opts),
         attach_mappings = function(_, map)
             action_set.select:replace(open_note)
+            map('i', '<C-e>', create_note)
+            map('n', '<C-e>', create_note)
             return true
         end
     }):find()
@@ -234,6 +242,8 @@ local telescope_zk_grep = function(opts)
       sorter = sorters.empty(),
       attach_mappings = function(_, map)
         action_set.select:replace(open_note)
+        map('i', '<C-e>', create_note)
+        map('n', '<C-e>', create_note)
         return true
       end
     }):find()
