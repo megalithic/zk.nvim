@@ -86,7 +86,7 @@ local telescope_zk_notes = function(opts)
         "-q",
         "-P",
         "--format",
-        "{{ path }}\t{{ title }}",
+        "{{ abs-path }}\t{{ title }}",
     }
 
     pickers.new({}, {
@@ -182,7 +182,7 @@ local telescope_zk_backlinks = function(opts)
         "--link-to", current,
         "-q",
         "-P",
-        "--format", "{{ path }}\t{{ title }}",
+        "--format", "{{ abs-path }}\t{{ title }}",
         notebook,
     }
     pickers.new({}, {
@@ -217,7 +217,7 @@ local telescope_zk_grep = function(opts)
             "--footer", "\n",
             "-q",
             "-P",
-            "--format", "{{ path }}\t{{ title }}",
+            "--format", "{{ abs-path }}\t{{ title }}",
             notebook
         }
         if not prompt or prompt == "" then
