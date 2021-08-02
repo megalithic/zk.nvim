@@ -53,7 +53,7 @@ end
 
 local create_entry_maker = function()
     local lookup_keys = {
-        ordinal = 1,
+        ordinal = 2,
         value = 1,
         display = 2,
         filename = 3,
@@ -108,7 +108,7 @@ local telescope_zk_backlinks = function(opts)
 
     local lookup_keys = {
         display = 2,
-        ordinal = 1,
+        ordinal = 2,
         value = 1,
         filename = 3,
         text = 4,
