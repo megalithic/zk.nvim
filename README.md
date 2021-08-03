@@ -162,6 +162,8 @@ Register a keymap to open the picker for the zk notes.
 
 ```vim
 nnoremap <leader>n <cmd>lua require('telescope').extensions.zk.zk_notes()<cr>
+nnoremap <leader>zg <cmd>lua require('telescope').extensions.zk.zk_grep()<cr>
+nnoremap <leader>zb <cmd>lua require('telescope').extensions.zk.zk_backlinks()<cr>
 ```
 
 ### Credit
