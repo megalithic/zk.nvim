@@ -131,8 +131,7 @@ local function handle_fzf(opts)
     preview = "bat -p --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always {}"
   end
 
-  opts.fzf_opts["--preview"] = ("--preview=%s"):format(vim.fn.shellescape(preview))
-
+  table.insert(opts.fzf_opts, string.format("--preview=%s", vim.fn.shellescape(preview)))
   local fzf_opts = table.concat(opts.fzf_opts, " ")
 
   coroutine.wrap(
