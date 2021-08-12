@@ -59,7 +59,7 @@ end
 function M.is_linkified(str)
   local current_line = vim.fn.getline(".")
   local patterns = {
-    "%[" .. str .. "%]"
+    "%[" .. str .. ".*%|?%]"
     -- string.format("%{%s%}", str)
   }
 
@@ -77,12 +77,14 @@ function M.make_link_text(title, path)
     return
   end
 
+  local relative_path = vim.fn.fnamemodify(path, ':.:gs?//?/?')
+
   if zk_config.link_format == "markdown" then
-    return string.format("[%s](%s)", title, vim.fn.shellescape(path))
+    return string.format("[%s](%s)", title, relative_path)
   elseif zk_config.link_format == "wiki" then
     -- TODO: look into supporting link | description:
     -- https://github.com/vimwiki/vimwiki/tree/dev#basic-markup
-    return string.format("[[%s|%s]]", vim.fn.shellescape(path), title)
+    return string.format("[[%s|%s]]", relative_path, title)
   end
 end
 

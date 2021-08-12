@@ -93,6 +93,11 @@ function M.create_note_link(args)
     opts.title = selection.contents
   end
 
+  if util.is_linkified(opts.title) then
+      util.error('Attempting to linkify a link, ignoring.')
+      return
+  end
+
   print("create_note_link(title) -> ", opts.title)
 
   if opts.title ~= nil and opts.title ~= "" then
