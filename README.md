@@ -1,6 +1,6 @@
 # zk.nvim
 
-**NOTE:** This plugin is presently _WIP_
+**NOTE:** This plugin is now _archived/deprecated_. Please see https://github.com/megalithic/zk.nvim/discussions/41 for more information.
 
 A lightweight neovim, _lua-based_ wrapper around [`zk`](https://github.com/mickael-menu/zk).
 
