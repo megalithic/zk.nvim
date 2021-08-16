@@ -1,4 +1,4 @@
-# zk.nvim
+# zk.nvim (archived/deprecated)
 
 **NOTE:** This plugin is now _archived/deprecated_. Please see https://github.com/megalithic/zk.nvim/discussions/41 for more information.
 
